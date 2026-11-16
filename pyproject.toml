@@ -13,7 +13,7 @@ dependencies = []
 [dependency-groups]
 dev = [
     "pytest>=8.4,<10",
-    "ruff>=0.12,<1",
+    "ruff>=0.17.5,<1",
     # Development only, and deliberately kept: tests/plugin/test_jsonschema_mini.py
     # differential-tests our own validator against the real one. Nothing at runtime
     # imports it.
