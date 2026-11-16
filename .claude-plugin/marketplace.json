@@ -1,8 +1,8 @@
 {
   "name": "aisdlc-local",
-  "owner": { "name": "rezaS0" },
+  "owner": { "name": "LordPotter7" },
   "metadata": {
-    "description": "Marketplace for the AI SDLC plugin. Add it from GitHub (`/plugin marketplace add rezaS0/AISdlc`) or by filesystem path during development; `./` resolves against the marketplace root either way. The name is a registry key fixed at first registration, not a claim about where the plugin can be used.",
+    "description": "Marketplace for the AI SDLC plugin. Add it from GitHub (`/plugin marketplace add LordPotter7/AISdlc`) or by filesystem path during development; `./` resolves against the marketplace root either way. The name is a registry key fixed at first registration, not a claim about where the plugin can be used.",
     "version": "0.2.0"
   },
   "plugins": [

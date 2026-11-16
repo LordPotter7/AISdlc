@@ -11,7 +11,7 @@ One command. Nothing is installed on your machine, no `PATH` entry is created, a
 package is downloaded from an index.
 
 ```text
-/plugin marketplace add rezaS0/AISdlc            # from GitHub
+/plugin marketplace add LordPotter7/AISdlc            # from GitHub
 /plugin marketplace add ./AISdlc                  # or a local checkout
 /plugin install aisdlc@aisdlc-local
 ```

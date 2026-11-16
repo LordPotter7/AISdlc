@@ -44,4 +44,4 @@ All notable changes to this project are recorded here. The format follows
 - Verification commands run through the shell. Running them on an untrusted repository runs its code.
 - Studio installers are unsigned.
 
-[0.2.0]: https://github.com/rezaS0/AISdlc/releases/tag/v0.2.0
+[0.2.0]: https://github.com/LordPotter7/AISdlc/releases/tag/v0.2.0

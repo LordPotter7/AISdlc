@@ -2,8 +2,8 @@
 # With one owner, do NOT enable "Require review from Code Owners" in branch protection:
 # GitHub never lets an author approve their own PR, so every PR would be blocked. Turn it on
 # once a second maintainer is listed here. Runner, guard and Studio host are the trust boundary.
-*                       @rezaS0
-/scripts/               @rezaS0
-/hooks/                 @rezaS0
-/desktop/src-tauri/     @rezaS0
-/.github/               @rezaS0
+*                       @LordPotter7
+/scripts/               @LordPotter7
+/hooks/                 @LordPotter7
+/desktop/src-tauri/     @LordPotter7
+/.github/               @LordPotter7

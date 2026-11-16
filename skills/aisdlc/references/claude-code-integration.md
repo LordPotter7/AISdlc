@@ -55,7 +55,7 @@ marketplace root — so the same descriptor works whether the marketplace was ad
 filesystem path or from a git remote. Nothing is published to PyPI.
 
 ```text
-/plugin marketplace add rezaS0/AISdlc          # hosted
+/plugin marketplace add LordPotter7/AISdlc          # hosted
 /plugin marketplace add <path-to-this-checkout> # or local, for development
 /plugin install aisdlc@aisdlc-local
 ```

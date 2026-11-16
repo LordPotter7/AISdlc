@@ -122,7 +122,7 @@ Claude never invents a successful gate, state transition, or evidence result. Ea
 runs on Windows, macOS, and Linux.
 
 ```text
-/plugin marketplace add rezaS0/AISdlc
+/plugin marketplace add LordPotter7/AISdlc
 /plugin install aisdlc@aisdlc-local
 /aisdlc:doctor
 ```
@@ -301,7 +301,7 @@ command after you preview and confirm it.
 npm --prefix desktop ci && npm --prefix desktop run tauri dev
 ```
 
-Installers are attached to each [GitHub release](https://github.com/rezaS0/AISdlc/releases) with checksums. They are
+Installers are attached to each [GitHub release](https://github.com/LordPotter7/AISdlc/releases) with checksums. They are
 not code-signed in 0.2.x, so Windows SmartScreen will warn. See [desktop/README.md](desktop/README.md).
 
 ---
