@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use AI SDLC in your work, please cite it using these metadata."
+title: "AI SDLC: Adaptive Evidence-Driven Lifecycle for AI-Assisted Engineering"
+type: software
+authors:
+  - alias: LordPotter7
+repository-code: "https://github.com/LordPotter7/AISdlc"
+url: "https://lordpotter7.github.io/AISdlc/"
+license: Apache-2.0
+abstract: >-
+  A Claude Code plugin and a deterministic runner that take an AI-assisted change from
+  intent to accepted, verified result, with human gates, commit-pinned evidence captured
+  outside the repository it judges, cross-model independent review, and an audit trail.
+keywords:
+  - ai-sdlc
+  - claude-code
+  - ai-governance
+  - verification
+  - traceability

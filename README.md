@@ -1,9 +1,21 @@
 # AI SDLC: Adaptive Evidence-Driven Lifecycle for AI-Assisted Engineering
 
+[![CI](https://github.com/LordPotter7/AISdlc/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/LordPotter7/AISdlc/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/LordPotter7/AISdlc/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/LordPotter7/AISdlc/actions/workflows/codeql.yml)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/LordPotter7/AISdlc/badge)](https://scorecard.dev/viewer/?uri=github.com/LordPotter7/AISdlc)
+[![Release](https://github.com/LordPotter7/AISdlc/actions/workflows/release.yml/badge.svg)](https://github.com/LordPotter7/AISdlc/actions/workflows/release.yml)
+[![Docs](https://img.shields.io/badge/docs-visual%20guide-0b7285?logo=githubpages&logoColor=white)](https://lordpotter7.github.io/AISdlc/)
+
+[![Version 0.2.0](https://img.shields.io/badge/version-0.2.0-informational)](CHANGELOG.md)
 [![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
-![Version 0.2.0](https://img.shields.io/badge/version-0.2.0-informational)
-![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-informational)
-![Runtime dependencies: 0](<https://img.shields.io/badge/runtime%20dependencies-0-success>)
+[![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-3776AB?logo=python&logoColor=white)](pyproject.toml)
+[![Runtime dependencies: 0](https://img.shields.io/badge/runtime%20dependencies-0-success)](pyproject.toml)
+[![Platforms](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)](#support-versioning-and-compatibility)
+[![Claude Code plugin](https://img.shields.io/badge/Claude%20Code-plugin-D97757?logo=anthropic&logoColor=white)](#install)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
+[![Dependabot](https://img.shields.io/badge/Dependabot-enabled-025E8C?logo=dependabot&logoColor=white)](.github/dependabot.yml)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-code%20of%20conduct-5e0d73)](CODE_OF_CONDUCT.md)
 
 **A Claude Code plugin and a deterministic runner that take an AI-assisted change from intent to accepted, verified
 result, with human gates, commit-pinned evidence, independent review, and an audit trail you can defend six months
@@ -315,7 +327,7 @@ not code-signed in 0.2.x, so Windows SmartScreen will warn. See [desktop/README.
 | Task states, evidence, convergence, verification classes                  | [docs/verification.md](docs/verification.md)         |
 | Every command, configuration key, environment variable, and recovery step | [docs/operations.md](docs/operations.md)             |
 | The exhaustive guide, including a ten-step first Intent                   | [docs/reference.md](docs/reference.md)               |
-| An interactive visual tour (open in a browser)                            | [docs/guide.html](docs/guide.html)                   |
+| An interactive visual tour | [lordpotter7.github.io/AISdlc](https://lordpotter7.github.io/AISdlc/) (source: [docs/guide.html](docs/guide.html)) |
 | A worked compact Intent you can read                                      | [examples/compact-intent/](examples/compact-intent/) |
 | Why it is built this way                                                  | [docs/decisions/](docs/decisions/)                   |
 | Release notes and known limitations                                       | [CHANGELOG.md](CHANGELOG.md)                         |

@@ -5,6 +5,17 @@ All notable changes to this project are recorded here. The format follows
 [Semantic Versioning](https://semver.org/). The plugin and AISDLC Studio share one version
 (`tools/bump-version.py`).
 
+## [Unreleased]
+
+### Added
+- Public documentation site on GitHub Pages (`docs/index.html` opens the visual guide), linked from the README and the repository's About panel.
+- README status badges: CI, CodeQL, OpenSSF Scorecard, Release, docs, platforms, tooling.
+- `CITATION.cff`, so GitHub offers a ready-made citation for the project.
+
+### Fixed
+- The test suite no longer depends on the developer's machine: an authenticated `gh` session made gate approvals bind to that login, so 89 of 530 tests failed locally while CI passed. `tests/conftest.py` now isolates every test from the ambient GitHub identity.
+- Links in the visual guide now point to GitHub, so they work on the published site.
+
 ## [0.2.0] — first public release
 
 ### Added
