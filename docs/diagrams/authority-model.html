@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Who owns what</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --color-paper:   #f5f5f5;
+      --color-ink:     #2d3142;
+      --color-muted:   #4f5d75;
+      --color-accent:  #eb6c36;
+      --font-sans:     'Geist', system-ui, sans-serif;
+      --font-serif:    'Instrument Serif', serif;
+      --font-mono:     'Geist Mono', ui-monospace, monospace;
+    }
+    body {
+      font-family: var(--font-sans);
+      background: var(--color-paper);
+      color: var(--color-ink);
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 3rem 2rem;
+    }
+    .frame { max-width: 1200px; width: 100%; }
+    .eyebrow {
+      font-family: var(--font-mono); font-size: 0.66rem; font-weight: 500;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--color-muted); margin-bottom: 0.5rem;
+    }
+    h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.5rem, 2.4vw + 0.75rem, 2rem);
+      font-weight: 400; letter-spacing: -0.02em; line-height: 1.15;
+      color: var(--color-ink); margin-bottom: 1.5rem;
+    }
+    svg { width: 100%; min-width: 900px; display: block; }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <p class="eyebrow">Architecture · AI SDLC</p>
+    <h1>Who owns what</h1>
+
+    <svg viewBox="0 0 1080 600" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="authority-model-title authority-model-desc">
+      <title id="authority-model-title">Who owns what in the AI SDLC</title>
+      <desc id="authority-model-desc">Architecture diagram showing a human approving gates and Claude Code issuing commands into the deterministic ai-sdlc runner, which lives in the plugin directory outside the repository it judges and owns the runtime state and delivery records inside it.</desc>
+      <defs>
+        <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/></marker>
+        <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#eb6c36"/></marker>
+        <marker id="arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2e5aa8"/></marker>
+      </defs>
+
+      <rect width="100%" height="100%" fill="#f5f5f5"/>
+
+      <!-- Zones (drawn before arrows and nodes) -->
+      <!-- The instrument: outside the repository, and unreachable from a session it judges. -->
+      <rect x="272" y="216" width="248" height="120" rx="8"
+            fill="rgba(235,108,54,0.05)" stroke="rgba(235,108,54,0.50)" stroke-width="1" stroke-dasharray="4,4"/>
+      <rect x="336" y="220" width="120" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="396" y="229" fill="#eb6c36" font-size="7" font-family="'Geist Mono', monospace"
+            text-anchor="middle" letter-spacing="0.14em">PLUGIN ROOT</text>
+
+      <!-- Everything the lifecycle records, inside the repository under change. -->
+      <rect x="552" y="216" width="240" height="248" rx="8"
+            fill="rgba(45,49,66,0.02)" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+      <rect x="608" y="220" width="128" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="672" y="229" fill="rgba(45,49,66,0.40)" font-size="7" font-family="'Geist Mono', monospace"
+            text-anchor="middle" letter-spacing="0.14em">YOUR REPOSITORY</text>
+
+      <!-- Arrows first (behind boxes) -->
+      <!-- Human → runner: the gate decision (accent) -->
+      <path d="M 128,184 V 200 Q 128,208 136,208 H 388 Q 396,208 396,216 V 248"
+            fill="none" stroke="#eb6c36" stroke-width="1.4" marker-end="url(#arrow-accent)"/>
+      <!-- Claude Code → runner -->
+      <line x1="216" y1="280" x2="296" y2="280" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <!-- runner → delivery records -->
+      <line x1="520" y1="280" x2="576" y2="280" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <!-- runner → runtime state -->
+      <path d="M 496,304 H 528 Q 536,304 536,312 V 408 Q 536,416 544,416 H 576"
+            fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+      <!-- Arrow labels -->
+      <rect x="216" y="188" width="88" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="260" y="197" fill="#eb6c36" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">GATE DECISION</text>
+
+      <rect x="224" y="260" width="64" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="256" y="269" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">COMMANDS</text>
+
+      <rect x="544" y="344" width="88" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="588" y="353" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">STATE · AUDIT</text>
+
+      <rect x="516" y="260" width="52" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="542" y="269" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">RECORDS</text>
+
+      <!-- Node: human approver -->
+      <rect x="40" y="120" width="176" height="64" rx="6" fill="#f5f5f5"/>
+      <rect x="40" y="120" width="176" height="64" rx="6" fill="rgba(79,93,117,0.10)" stroke="#7a8399" stroke-width="1"/>
+      <rect x="48" y="128" width="36" height="12" rx="2" fill="transparent" stroke="rgba(122,131,153,0.40)" stroke-width="0.8"/>
+      <text x="66" y="137" fill="#7a8399" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">HUMAN</text>
+      <text x="128" y="156" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Accountable owner</text>
+      <text x="128" y="172" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">approves G1–G5</text>
+
+      <!-- Node: Claude Code -->
+      <rect x="40" y="248" width="176" height="64" rx="6" fill="#f5f5f5"/>
+      <rect x="40" y="248" width="176" height="64" rx="6" fill="rgba(45,49,66,0.03)" stroke="rgba(45,49,66,0.30)" stroke-width="1"/>
+      <rect x="48" y="256" width="36" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.22)" stroke-width="0.8"/>
+      <text x="66" y="265" fill="#7a8399" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">AGENT</text>
+      <text x="128" y="284" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Claude Code</text>
+      <text x="128" y="300" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">/aisdlc:* · skill · hooks</text>
+
+      <!-- Node: runner (focal) -->
+      <rect x="296" y="248" width="200" height="64" rx="6" fill="#f5f5f5"/>
+      <rect x="296" y="248" width="200" height="64" rx="6" fill="rgba(235,108,54,0.08)" stroke="#eb6c36" stroke-width="1"/>
+      <rect x="304" y="256" width="36" height="12" rx="2" fill="transparent" stroke="rgba(235,108,54,0.50)" stroke-width="0.8"/>
+      <text x="322" y="265" fill="#eb6c36" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">RUNNER</text>
+      <text x="476" y="308" fill="rgba(235,108,54,0.10)" font-size="32" font-weight="600" font-family="'Geist Mono', monospace" text-anchor="end">01</text>
+      <text x="396" y="284" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">ai-sdlc</text>
+      <text x="396" y="300" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">on PATH · sole authority</text>
+
+      <!-- Node: runtime state -->
+      <rect x="576" y="384" width="192" height="64" rx="6" fill="#f5f5f5"/>
+      <rect x="576" y="384" width="192" height="64" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+      <rect x="584" y="392" width="36" height="12" rx="2" fill="transparent" stroke="rgba(79,93,117,0.50)" stroke-width="0.8"/>
+      <text x="602" y="401" fill="#4f5d75" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">STATE</text>
+      <text x="672" y="420" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Runtime state</text>
+      <text x="672" y="436" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">.ai-sdlc/runtime/</text>
+
+      <!-- Node: delivery records -->
+      <rect x="576" y="248" width="192" height="64" rx="6" fill="#f5f5f5"/>
+      <rect x="576" y="248" width="192" height="64" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+      <rect x="584" y="256" width="36" height="12" rx="2" fill="transparent" stroke="rgba(79,93,117,0.50)" stroke-width="0.8"/>
+      <text x="602" y="265" fill="#4f5d75" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">RECS</text>
+      <text x="672" y="284" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Delivery records</text>
+      <text x="672" y="300" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">delivery/intents/</text>
+
+      <!-- Legend strip -->
+      <line x1="40" y1="516" x2="1040" y2="516" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+      <text x="40" y="532" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.18em">LEGEND</text>
+
+      <rect x="40" y="552" width="14" height="10" rx="2" fill="rgba(235,108,54,0.08)" stroke="#eb6c36" stroke-width="1"/>
+      <text x="60" y="560" fill="#4f5d75" font-size="8.5" font-family="'Geist', sans-serif">Sole authority</text>
+
+      <rect x="184" y="552" width="14" height="10" rx="2" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+      <text x="204" y="560" fill="#4f5d75" font-size="8.5" font-family="'Geist', sans-serif">Runner-owned store</text>
+
+      <rect x="360" y="552" width="14" height="10" rx="2" fill="rgba(235,108,54,0.05)" stroke="rgba(235,108,54,0.50)" stroke-width="1" stroke-dasharray="3,3"/>
+      <text x="380" y="560" fill="#4f5d75" font-size="8.5" font-family="'Geist', sans-serif">Instrument boundary</text>
+
+      <rect x="520" y="552" width="14" height="10" rx="2" fill="rgba(79,93,117,0.10)" stroke="#7a8399" stroke-width="1"/>
+      <text x="540" y="560" fill="#4f5d75" font-size="8.5" font-family="'Geist', sans-serif">Human</text>
+
+      <line x1="624" y1="558" x2="652" y2="558" stroke="#eb6c36" stroke-width="1.4" marker-end="url(#arrow-accent)"/>
+      <text x="660" y="560" fill="#4f5d75" font-size="8.5" font-family="'Geist', sans-serif">Approval</text>
+
+    </svg>
+  </div>
+</body>
+</html>

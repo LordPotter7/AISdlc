@@ -1,0 +1,171 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aisdlc.dev/schemas/requirement.schema.json",
+  "title": "AI SDLC Requirements Document",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["intent_id", "functional_requirements", "non_functional_requirements", "acceptance_criteria", "success_criteria"],
+  "properties": {
+    "schema_version": {"type": "integer", "minimum": 0, "description": "Record schema generation. Absent means 0: a record written before schema versioning existed."},
+    "intent_id": {"type": "string", "pattern": "^I[0-9]{3,}$"},
+    "functional_requirements": {"type": "array", "items": {"$ref": "#/$defs/functionalRequirement"}},
+    "non_functional_requirements": {"type": "array", "items": {"$ref": "#/$defs/nonFunctionalRequirement"}},
+    "acceptance_criteria": {"type": "array", "items": {"$ref": "#/$defs/criterion"}},
+    "success_criteria": {"type": "array", "items": {"$ref": "#/$defs/success"}},
+    "contracts": {
+      "type": "array",
+      "description": "Interface contracts under 02-specification/ this Intent delivers. Every operation must be covered by a criterion's `contract_operations` or excluded with a reason.",
+      "items": {"$ref": "#/$defs/contract"}
+    },
+    "glossary": {
+      "type": "array",
+      "description": "Domain terms defined for this specification. A term defined here is precise by declaration, so the quality lint does not flag it as ambiguous.",
+      "items": {"$ref": "#/$defs/glossaryEntry"}
+    }
+  },
+  "$defs": {
+    "criterionRefs": {"type": "array", "minItems": 1, "items": {"type": "string", "pattern": "^AC-[0-9]{3,}$"}},
+    "priority": {
+      "enum": ["must", "should", "could", "wont"],
+      "description": "MoSCoW. `wont` records scope explicitly excluded from this Intent: it needs no Task, and a Task that maps to it is scope growth."
+    },
+    "sources": {
+      "type": "array",
+      "description": "Where the requirement came from: a brief line, a stakeholder, a finding, or a decision.",
+      "items": {"type": "string", "minLength": 1}
+    },
+    "compliance": {
+      "type": "array",
+      "description": "Controls this requirement implements, e.g. {framework: SOC2, control: CC6.1}.",
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["framework", "control"],
+        "properties": {"framework": {"type": "string", "minLength": 1}, "control": {"type": "string", "minLength": 1}}
+      }
+    },
+    "dataClassification": {"enum": ["public", "internal", "confidential", "restricted"]},
+    "qualityCategory": {
+      "description": "ISO/IEC 25010 quality characteristics, split where enterprise review asks about them separately.",
+      "enum": [
+        "performance", "scalability", "availability", "reliability", "security", "privacy", "compliance",
+        "accessibility", "usability", "maintainability", "portability", "compatibility", "observability",
+        "operability", "safety", "cost"
+      ]
+    },
+    "measure": {
+      "type": "object", "additionalProperties": false, "required": ["metric", "target"],
+      "description": "The measurable form of a quality requirement: p95 latency <= 300 ms under 500 rps.",
+      "properties": {
+        "metric": {"type": "string", "minLength": 1},
+        "target": {"type": ["number", "string"]},
+        "unit": {"type": "string"},
+        "condition": {"type": "string", "description": "Load, dataset, or environment the target holds under."}
+      }
+    },
+    "functionalRequirement": {
+      "type": "object", "additionalProperties": false, "required": ["id", "statement", "acceptance_criteria"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^REQ-F-[0-9]{3,}$"},
+        "statement": {"type": "string", "minLength": 1},
+        "acceptance_criteria": {"$ref": "#/$defs/criterionRefs"},
+        "priority": {"$ref": "#/$defs/priority"},
+        "rationale": {"type": "string", "minLength": 1},
+        "sources": {"$ref": "#/$defs/sources"},
+        "compliance": {"$ref": "#/$defs/compliance"},
+        "data_classification": {"$ref": "#/$defs/dataClassification"},
+        "personal_data": {"type": "boolean"}
+      }
+    },
+    "nonFunctionalRequirement": {
+      "type": "object", "additionalProperties": false, "required": ["id", "statement", "acceptance_criteria"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^REQ-NFR-[0-9]{3,}$"},
+        "statement": {"type": "string", "minLength": 1},
+        "acceptance_criteria": {"$ref": "#/$defs/criterionRefs"},
+        "category": {"$ref": "#/$defs/qualityCategory"},
+        "measure": {"$ref": "#/$defs/measure"},
+        "wcag": {
+          "type": "object", "additionalProperties": false, "required": ["version", "level"],
+          "description": "Required when category is accessibility: the conformance target automated checks verify.",
+          "properties": {
+            "version": {"enum": ["2.1", "2.2"]},
+            "level": {"enum": ["A", "AA", "AAA"]},
+            "scope": {"type": "array", "items": {"type": "string", "minLength": 1}, "description": "Pages, routes, or components in scope."}
+          }
+        },
+        "manual_audit": {
+          "type": "object", "additionalProperties": false, "required": ["owner"],
+          "description": "Who covers the WCAG success criteria automated checkers cannot decide. The audit itself is outside this lifecycle.",
+          "properties": {"owner": {"type": "string", "minLength": 1}, "reference": {"type": "string"}}
+        },
+        "priority": {"$ref": "#/$defs/priority"},
+        "rationale": {"type": "string", "minLength": 1},
+        "sources": {"$ref": "#/$defs/sources"},
+        "compliance": {"$ref": "#/$defs/compliance"},
+        "data_classification": {"$ref": "#/$defs/dataClassification"},
+        "personal_data": {"type": "boolean"}
+      }
+    },
+    "criterion": {
+      "type": "object", "additionalProperties": true, "required": ["id", "verification_class", "statement"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^AC-[0-9]{3,}$"},
+        "verification_class": {"enum": ["D", "S", "J", "N"]},
+        "statement": {"type": "string", "minLength": 1},
+        "given": {"type": "string", "minLength": 1},
+        "when": {"type": "string", "minLength": 1},
+        "then": {"type": "string", "minLength": 1},
+        "contract_operations": {
+          "type": "array", "minItems": 1,
+          "description": "Contract operations this criterion verifies, as `<contract path>#<operationId>`.",
+          "items": {"type": "string", "pattern": "^contracts/.+#.+$"}
+        },
+        "check": {"type": "string"},
+        "eval": {"type": "string", "pattern": "^EVAL-[0-9]{3,}$"},
+        "dataset": {"type": "string"},
+        "metric": {"type": "string"},
+        "threshold": {},
+        "minimum_sample_size": {"type": "integer", "minimum": 1},
+        "tolerance_band": {"type": "number", "minimum": 0}
+      }
+    },
+    "success": {
+      "type": "object", "additionalProperties": false, "required": ["id", "statement"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^SC-[0-9]{3,}$"},
+        "statement": {"type": "string", "minLength": 1},
+        "acceptance_criteria": {"$ref": "#/$defs/criterionRefs"},
+        "brief_measure": {"type": "string", "minLength": 1, "description": "The Gate 1 success measure this criterion demonstrates, quoted from the brief."}
+      }
+    },
+    "contract": {
+      "type": "object", "additionalProperties": false, "required": ["path"],
+      "properties": {
+        "path": {"type": "string", "pattern": "^contracts/", "description": "Relative to 02-specification/."},
+        "kind": {"enum": ["openapi", "asyncapi", "jsonschema"], "description": "Detected from the document when omitted."},
+        "api": {
+          "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$",
+          "description": "S3.3: stable identity across Intents. Contracts sharing an `api` are one interface, checked for concurrent change and for breaking change against the last completed Intent."
+        },
+        "breaking_changes_accepted": {
+          "type": "array",
+          "description": "S3.3: operations whose breaking change against the baseline is a decision, with a name and a reason.",
+          "items": {
+            "type": "object", "additionalProperties": false, "required": ["operation", "accepted_by", "reason"],
+            "properties": {"operation": {"type": "string", "minLength": 1}, "accepted_by": {"type": "string", "minLength": 1}, "reason": {"type": "string", "minLength": 1}}
+          }
+        },
+        "excluded_operations": {
+          "type": "array",
+          "items": {
+            "type": "object", "additionalProperties": false, "required": ["operation", "reason"],
+            "properties": {"operation": {"type": "string", "minLength": 1}, "reason": {"type": "string", "minLength": 1}}
+          }
+        }
+      }
+    },
+    "glossaryEntry": {
+      "type": "object", "additionalProperties": false, "required": ["term", "definition"],
+      "properties": {"term": {"type": "string", "minLength": 1}, "definition": {"type": "string", "minLength": 1}}
+    }
+  }
+}

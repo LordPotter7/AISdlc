@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-registry-relink"
+description = "Enables the registry_relink command without any pre-configured scope."
+commands.allow = ["registry_relink"]
+
+[[permission]]
+identifier = "deny-registry-relink"
+description = "Denies the registry_relink command without any pre-configured scope."
+commands.deny = ["registry_relink"]

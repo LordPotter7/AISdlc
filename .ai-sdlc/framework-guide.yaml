@@ -1,0 +1,152 @@
+# The framework explained in its own words: the stages, the vocabulary, and the lint rules.
+# One source for AISDLC Studio's "How AISDLC works" view and glossary hovercards.
+# Framework-owned (like constitution.md): a repository may place its own copy under
+# .ai-sdlc/ to reword it, but the ids must stay the same.
+# tests/test_l1_learn.py keeps this file honest against the runner: every stage folder,
+# gate and SQ rule the runner knows appears here, and nothing here is invented.
+version: 1
+
+stages:
+  - id: register
+    title: Register
+    folder: 00-intent
+    gate: null
+    owner: runner
+    what: The runner gives the change a permanent id and a folder. You choose compact or full mode.
+    your_part: Give it a title, a kind, and a reason for skipping or running discovery.
+    authored: []
+    command: /aisdlc:start "<title>"
+  - id: frame
+    title: Frame
+    folder: 01-brief
+    gate: G1
+    owner: you
+    what: Say the problem, the outcome, and how success is measured, in plain language.
+    your_part: Write the brief. A person approves G1.
+    authored:
+      - {file: 01-brief/brief.md, template: brief-template.md}
+    command: /aisdlc:start "<title>"
+  - id: specify
+    title: Specify
+    folder: 02-specification
+    gate: G2
+    owner: you + agent
+    what: Turn the brief into testable requirements. Each has acceptance criteria, and each criterion has exactly one verification class (D, S, J or N).
+    your_part: Write or review the spec. A red-team agent reviews it first; then a person approves G2. After G2 the spec is locked.
+    authored:
+      - {file: 02-specification/requirements.yaml, template: requirements-template.yaml, schema: requirement.schema.json}
+      - {file: 02-specification/contracts/*.yaml, note: OpenAPI, AsyncAPI or JSON Schema for interfaces the change touches}
+      - {file: 02-specification/threat-model.yaml, template: threat-model-template.yaml, schema: threat-model.schema.json, note: required for full, risky Intents}
+      - {file: 02-specification/eval-design.md, template: eval-design-template.md, note: required when the Intent contains model behaviour}
+    command: /aisdlc:specify <id>
+  - id: plan
+    title: Plan
+    folder: 03-planning
+    gate: G3
+    owner: agent + you
+    what: Split the work into Build Phases and Tasks. P00 is the walking skeleton. Every Task traces to a requirement, finding or decision.
+    your_part: Check the plan covers every requirement and that parallel Tasks do not collide. A person approves G3.
+    authored:
+      - {file: 03-planning/master-plan.md, template: master-plan-template.md, note: full mode}
+      - {file: 04-build/<Ixxx-Pnn>/phase.yaml, template: phase-template.yaml, schema: phase.schema.json}
+      - {file: 04-build/<Ixxx-Pnn>/tasks/<Ixxx-Pnn-Tnnn>/task.yaml, template: task-template.yaml, schema: task.schema.json}
+    command: /aisdlc:plan <id>
+  - id: build
+    title: Build
+    folder: 04-build
+    gate: G4
+    owner: agent
+    what: The agent implements one Task at a time. The runner runs its checks and keeps the evidence. A reviewer from a different model family approves each Task.
+    your_part: Watch, answer questions, unblock. A person approves G4 once the walking skeleton works.
+    authored: []
+    command: /aisdlc:run <id>
+  - id: converge
+    title: Converge
+    folder: 05-verification
+    gate: G5
+    owner: runner
+    what: Every Task verified at one commit, every S, J and N evaluation current, and no open serious finding.
+    your_part: Read the convergence report. A person accepts the Intent at G5.
+    authored:
+      - {file: 05-verification/findings.yaml, template: findings-template.yaml, schema: finding.schema.json}
+    command: /aisdlc:verify <id>
+  - id: close
+    title: Close
+    folder: 06-close
+    gate: null
+    owner: you
+    what: Record what was learned. A serious finding becomes a lesson that later Intents must answer.
+    your_part: Propose and promote lessons.
+    authored:
+      - {file: .ai-sdlc/lessons (via `ai-sdlc lesson propose`), template: lesson-template.yaml, schema: lesson.schema.json}
+    command: /aisdlc:close <id>
+
+gates:
+  G1: Is this the right problem, framed correctly?
+  G2: Are the requirements complete, testable, and correctly classified?
+  G3: Is the plan sound, ordered, and safely parallelised?
+  G4: Does the walking skeleton prove the approach?
+  G5: Is this Intent complete, converged, and acceptable?
+
+terms:
+  - {id: intent, term: Intent, definition: "One change you want to make. The runner gives it a permanent id (I003), and everything about it lives in delivery/intents/I003-<slug>/."}
+  - {id: runner, term: runner, definition: "The ai-sdlc program. It owns ids, state, gates, evidence and the audit log. Studio and the agent ask it; neither writes its records directly."}
+  - {id: gate, term: gate, definition: "A decision only a person can make (G1 to G5). The runner refuses to move an Intent past it until someone approves, and records who."}
+  - {id: reopen, term: reopen a gate, definition: "Undo an approval on the record, with a reason, so an approved artifact can change. Evidence that depended on it no longer counts until the gate is approved again."}
+  - {id: brief, term: brief, definition: "01-brief/brief.md: the problem, the expected outcome, and how success is measured, in plain language."}
+  - {id: requirement, term: requirement, definition: "One testable statement of what the system shall do (REQ-F-001) or how well (REQ-NFR-001). It lives in 02-specification/requirements.yaml."}
+  - {id: ears, term: EARS, definition: "Easy Approach to Requirements Syntax: sentence shapes such as 'When <trigger>, the <system> shall <response>' that make a requirement testable."}
+  - {id: acceptance-criterion, term: acceptance criterion, definition: "How one requirement is proved (AC-001). Each criterion has exactly one verification class."}
+  - {id: verification-class, term: verification class, definition: "How a criterion is checked. D deterministic, S statistical, J judged, N adversarial. Exactly one per criterion."}
+  - {id: class-d, term: Class D, definition: "Deterministic: a command that passes or fails the same way every time. Most tests."}
+  - {id: class-s, term: Class S, definition: "Statistical: run three times on a registered dataset; the median must meet the threshold and every run must stay within the tolerance band."}
+  - {id: class-j, term: Class J, definition: "Judged: a calibrated model from a different family scores the output, in both orders, with agreement of at least 0.85 against human labels."}
+  - {id: class-n, term: Class N, definition: "Adversarial: attacks replayed from a dataset. It passes only with zero successful attacks."}
+  - {id: success-criterion, term: success criterion, definition: "A measure from the brief (SC-001), tied to the acceptance criteria that demonstrate it."}
+  - {id: contract, term: contract, definition: "An OpenAPI, AsyncAPI or JSON Schema file in 02-specification/contracts/. Every operation must be covered by a criterion or excluded with a reason."}
+  - {id: threat-model, term: threat model, definition: "02-specification/threat-model.yaml: trust boundaries, each answering all six STRIDE categories with a threat or a reason it does not apply."}
+  - {id: stride, term: STRIDE, definition: "Spoofing, Tampering, Repudiation, Information disclosure, Denial of service, Elevation of privilege: the six kinds of threat a boundary must answer."}
+  - {id: phase, term: Build Phase, definition: "A group of Tasks (I003-P01). P00 comes first; everything after it waits for G4."}
+  - {id: walking-skeleton, term: walking skeleton, definition: "Phase P00: the thinnest slice that proves the approach end to end before the rest is built."}
+  - {id: task, term: Task, definition: "One unit of work an agent can finish in one focused context (I003-P00-T001). It traces to a requirement, finding or decision."}
+  - {id: evidence, term: evidence, definition: "What the runner captured when it ran a Task's checks: commands, exit codes, output hashes, pinned to a git commit. Never edited by hand."}
+  - {id: holdout, term: held-out check, definition: "A check the implementer does not see, written from the specification. It catches work that passes the visible tests but misses the requirement."}
+  - {id: conformance-gap, term: conformance gap, definition: "Visible checks pass but held-out checks fail: the work was tuned to the tests rather than the requirement."}
+  - {id: pre-gate-review, term: pre-gate review, definition: "An adversarial review of the spec (before G2) or plan (before G3) by the red-team agent, from a fresh context and a different model family."}
+  - {id: independent-review, term: independent review, definition: "A Task is verified only when a reviewer from a different model family than the implementer approves its evidence."}
+  - {id: convergence, term: convergence, definition: "The check before G5: every Task verified at one commit, evaluations current, no open critical or high finding, traceability complete."}
+  - {id: finding, term: finding, definition: "A problem someone found (F-001), with severity and the stage it entered and was caught at. Lives in 05-verification/findings.yaml."}
+  - {id: lesson, term: lesson, definition: "A finding generalised into a rule (LESSON-001). Once promoted, later Intents with the same trigger must answer it."}
+  - {id: standing-threat, term: standing threat, definition: "A promoted lesson that every later Intent with a matching trigger flag must answer in its threat model."}
+  - {id: trigger-flags, term: trigger flags, definition: "Facts about an Intent (multi_tenant, has_side_effect, retrieval_grounded, contains_model_behavior) that decide which standing suites and threats it inherits."}
+  - {id: model-behaviour, term: model behaviour, definition: "Part of the change is produced by an AI model, so it needs S, J or N evaluations and full mode, not only tests."}
+  - {id: compact-mode, term: compact mode, definition: "For small, well-understood changes: no brief or master plan required, only Class D criteria, and G2 and G3 approved together."}
+  - {id: full-mode, term: full mode, definition: "For new behaviour, risk, security or model output: brief, threat model when risky, evaluations, and a phased plan."}
+  - {id: discovery, term: discovery, definition: "Mapping an existing codebase (/aisdlc:understand) and pinning its current behaviour (/aisdlc:baseline) before specifying a change to it."}
+  - {id: baseline, term: baseline, definition: "A commit-pinned snapshot of what probes report today (BASELINE-001). A later comparison fails only on regressions."}
+  - {id: contention, term: contention, definition: "Two active Intents change the same contract operation or declared resource. It is reported, not blocked; serialise them or co-approve with a reason."}
+  - {id: decision, term: decision, definition: "An architecture decision recorded by the runner (I003-D001), with alternatives. An accepted decision must be implemented by a Task."}
+  - {id: program, term: program, definition: "A group of Intents with ordering and roll-up reporting (PRG001). It carries no gates of its own."}
+  - {id: spec-lint, term: spec lint, definition: "The runner's requirement-quality rules (SQ001 to SQ018). Errors block entry to G2; warnings and notes inform the approver."}
+  - {id: price-of-approving, term: price of approving, definition: "What a reopened G2 costs if approved: requirements and criteria that changed, and the Tasks whose evidence stops counting."}
+  - {id: traceability, term: traceability, definition: "The chain requirement → criterion → Task → evidence, generated by the runner into traceability.json."}
+
+lint_rules:
+  - {code: SQ001, severity: error, title: Unfinished requirement, explanation: "A placeholder or TBD is still in the text.", fix: "Replace it with the real value, or move the open question to the brief."}
+  - {code: SQ002, severity: warning, title: Ambiguous term, explanation: "Words like 'fast' or 'user-friendly' cannot be tested.", fix: "Quantify it (within 200 ms), or define it in the glossary."}
+  - {code: SQ003, severity: warning, title: Open-ended list, explanation: "'etc.' or 'such as' leaves the checked cases undefined.", fix: "List every case the criterion will check."}
+  - {code: SQ004, severity: warning, title: More than one behaviour, explanation: "Two binding clauses in one requirement cannot pass or fail separately.", fix: "Split it into two requirements."}
+  - {code: SQ005, severity: warning, title: Unmeasured quality requirement, explanation: "A non-functional requirement with no measure has no target to test.", fix: "Declare metric, target, unit and condition."}
+  - {code: SQ006, severity: info, title: No binding modal, explanation: "Without shall, must or will, the statement is not an obligation.", fix: "State it as 'The <system> shall …'."}
+  - {code: SQ007, severity: info, title: No quality category, explanation: "The coverage report cannot place a non-functional requirement without a category.", fix: "Add a category such as performance, security or accessibility."}
+  - {code: SQ008, severity: info, title: No priority, explanation: "Without must, should, could or won't, nobody knows what can be cut.", fix: "Add a priority."}
+  - {code: SQ009, severity: info, title: No rationale or source, explanation: "Nobody will know later why the requirement exists.", fix: "Add a rationale or the source it came from."}
+  - {code: SQ010, severity: warning, title: Unprotected personal data, explanation: "Personal or confidential data is handled, but no requirement says how it is protected.", fix: "Add a privacy, security or compliance requirement."}
+  - {code: SQ011, severity: warning, title: Prohibition tested only by Class D, explanation: "'Shall not' is usually an adversarial property.", fix: "Add a Class N criterion with attack cases."}
+  - {code: SQ012, severity: warning, title: Undemonstrated success measure, explanation: "A success criterion references no acceptance criterion.", fix: "Link the criteria that demonstrate it."}
+  - {code: SQ013, severity: warning, title: Undeclared contract, explanation: "A contract file is not listed under `contracts`, so nothing has to cover it.", fix: "Declare it with its path and api."}
+  - {code: SQ014, severity: warning, title: Silent trust boundary, explanation: "A boundary does not answer every STRIDE category.", fix: "Name a threat, or record why the category does not apply."}
+  - {code: SQ015, severity: warning, title: Risky Intent without a threat model, explanation: "Security, multi-tenant or side-effecting work has no threat model.", fix: "Use full mode and write threat-model.yaml."}
+  - {code: SQ016, severity: info, title: No manual accessibility audit, explanation: "Automated checkers decide only a minority of WCAG success criteria.", fix: "Name the manual_audit owner."}
+  - {code: SQ017, severity: warning, title: Glossary clash, explanation: "The spec redefines a term the repository glossary already owns.", fix: "Use the shared definition, or ask its owner to change it."}
+  - {code: SQ018, severity: info, title: Contract without an api identity, explanation: "Cross-Intent contention and breaking-change checks cannot see it.", fix: "Add `api:` to the contract declaration."}

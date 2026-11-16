@@ -1,0 +1,17 @@
+{
+  "intent_id": "I001",
+  "authority": "manual-p00-exercise",
+  "generated_by_runner": false,
+  "links": [
+    {
+      "requirement": "REQ-F-001",
+      "acceptance_criteria": ["AC-001"],
+      "verification_class": "D",
+      "tasks": ["I001-P00-T001"],
+      "artifacts": [".claude/skills/aisdlc/SKILL.md"],
+      "checks": ["tests/test_validate_p00.py"],
+      "evidence": ["04-build/I001-P00-compact/tasks/I001-P00-T001/evidence/manifest.json"],
+      "status": "provisional"
+    }
+  ]
+}

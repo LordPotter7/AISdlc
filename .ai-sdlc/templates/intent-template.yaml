@@ -1,0 +1,9 @@
+id: "{{INTENT_ID}}"
+title: "{{INTENT_TITLE}}"
+intent_type: "{{feature|bugfix|refactor|infrastructure|security|investigation_or_poc}}"
+status: initialized
+autonomy_mode: autonomous
+contains_model_behavior: false
+artifact_mode: "{{compact|full}}"
+trigger_flags: {}
+created_at: "{{ISO_8601_UTC}}"

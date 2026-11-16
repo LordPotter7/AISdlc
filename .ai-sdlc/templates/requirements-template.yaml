@@ -1,0 +1,75 @@
+intent_id: "{{INTENT_ID}}"
+
+# One obligation per requirement, stated as "The <system> shall <response>" (EARS). Add a
+# trigger or state when there is one: "When <trigger>, the <system> shall <response>";
+# "While <state>, ..."; "If <unwanted condition>, then ...". Run `ai-sdlc spec-lint` before
+# asking for Gate 2. Optional fields are shown; delete any that do not apply.
+
+functional_requirements:
+  - id: REQ-F-001
+    statement: "{{WHEN_TRIGGER_THE_SYSTEM_SHALL_RESPONSE}}"
+    acceptance_criteria: [AC-001]
+    priority: must                       # must | should | could | wont (wont = recorded, excluded scope)
+    rationale: "{{WHY_THIS_REQUIREMENT_EXISTS}}"
+    sources: ["brief: {{BRIEF_SECTION_OR_SUCCESS_MEASURE}}"]
+    # data_classification: confidential  # public | internal | confidential | restricted
+    # personal_data: true
+    # compliance: [{framework: "{{e.g. SOC2}}", control: "{{e.g. CC6.1}}"}]
+
+non_functional_requirements:
+  - id: REQ-NFR-001
+    statement: "{{THE_SYSTEM_SHALL_QUALITY_WITH_A_NUMBER}}"
+    acceptance_criteria: [AC-002]
+    # performance | scalability | availability | reliability | security | privacy | compliance |
+    # accessibility | usability | maintainability | portability | compatibility | observability |
+    # operability | safety | cost
+    category: performance
+    measure: {metric: "{{e.g. p95 latency}}", target: "{{e.g. 300}}", unit: "{{e.g. ms}}", condition: "{{e.g. 500 rps}}"}
+    priority: should
+    sources: ["brief: {{BRIEF_SECTION_OR_SUCCESS_MEASURE}}"]
+  # Accessibility is the one front-end requirement in scope (ADR-009): a WCAG target, a
+  # Class D automated checker, and a named owner for what automated checks cannot decide.
+  # - id: REQ-NFR-002
+  #   statement: "The {{PAGES}} shall have zero WCAG 2.2 AA violations reported by axe-core."
+  #   acceptance_criteria: [AC-003]
+  #   category: accessibility
+  #   wcag: {version: "2.2", level: AA, scope: ["{{ROUTE_OR_COMPONENT}}"]}
+  #   measure: {metric: axe violations, target: 0}
+  #   manual_audit: {owner: "{{NAMED_PERSON_OR_TEAM}}", reference: "{{AUDIT_LINK}}"}
+
+acceptance_criteria:
+  - id: AC-001
+    verification_class: D
+    statement: "{{OBSERVABLE_PASS_CONDITION}}"
+    given: "{{PRECONDITION}}"
+    when: "{{ACTION_OR_EVENT}}"
+    then: "{{OBSERVABLE_OUTCOME}}"
+    check: "{{REPOSITORY_VERIFICATION_COMMAND}}"
+    # contract_operations: ["contracts/{{api}}.yaml#{{operationId}}"]  # contract-conformance criterion
+  - id: AC-002
+    verification_class: D
+    statement: "{{MEASURED_VALUE_MEETS_TARGET_UNDER_CONDITION}}"
+    check: "{{BENCHMARK_OR_LOAD_TEST_COMMAND}}"
+
+success_criteria:
+  - id: SC-001
+    statement: "{{GATE_1_SUCCESS_MEASURE_RESTATED_AS_A_RESULT}}"
+    brief_measure: "{{QUOTED_FROM_THE_BRIEF}}"
+    acceptance_criteria: [AC-001, AC-002]
+
+# Interface contracts under 02-specification/contracts/ (OpenAPI 3, AsyncAPI 2/3, JSON Schema).
+# Every operation must be covered by a criterion's `contract_operations`, or excluded here.
+# contracts:
+#   - path: contracts/{{api}}.yaml
+#     api: "{{stable-api-id}}"   # same id across Intents = same interface (contention, breaking changes)
+#     breaking_changes_accepted:  # only when a breaking change against the last completed Intent is intended
+#       - {operation: "{{operationId}}", accepted_by: "{{API_OWNER}}", reason: "{{MIGRATION_PLAN}}"}
+#     excluded_operations:
+#       - {operation: "{{operationId or 'METHOD /route'}}", reason: "{{WHY_NOT_IN_THIS_INTENT}}"}
+
+# Terms defined here are precise by declaration; the lint does not flag them as ambiguous.
+# Prefer the repository glossary (.ai-sdlc/glossary.yaml) for terms other Intents will use;
+# promote one with `ai-sdlc glossary promote <intent> <term> --owner <owner>`.
+glossary:
+  - term: "{{DOMAIN_TERM}}"
+    definition: "{{WHAT_IT_MEANS_HERE_MEASURABLY}}"

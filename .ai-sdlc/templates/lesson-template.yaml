@@ -1,0 +1,22 @@
+# A lesson turns a finding into a rule later Intents must answer. Lifecycle:
+#   ai-sdlc lesson propose <this file>
+#   ai-sdlc lesson transition LESSON-xxx accepted --actor <you>
+#   ai-sdlc lesson promote LESSON-xxx        # writes the target, e.g. a standing threat
+# Schema: schemas/lesson.schema.json
+id: LESSON-001                        # the next free number; never reused
+source_intent: "{{INTENT_ID}}"
+source_findings: [F-001]
+severity_of_source: high              # critical | high | medium | low
+category: security
+status: proposed
+observation: "{{WHAT_WENT_WRONG_IN_GENERAL_TERMS}}"
+impact: "{{WHAT_IT_COSTS_WHEN_IT_RECURS}}"
+review_after_intents: 5               # revisit after this many later Intents
+targets:
+  - type: threat                      # regression_eval | policy | checklist | heuristic | threat
+    artifact: .ai-sdlc/security/standing-threats.yaml
+    trigger: multi_tenant             # the Intent flag that makes a later Intent inherit it
+    enforcement: blocking             # blocking | advisory
+    fires_at: [stage_2_specification]
+    stride: information_disclosure    # required for a threat target
+    rule: "{{THE_RULE_LATER_INTENTS_MUST_ANSWER}}"

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aisdlc.dev/schemas/intent.schema.json",
+  "title": "AI SDLC Intent",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "title", "intent_type", "status", "autonomy_mode", "contains_model_behavior", "artifact_mode", "trigger_flags", "created_at"],
+  "properties": {"profile": {"type": "object", "additionalProperties": false, "required": ["name", "sha256"], "description": "ADR-010: the pipeline profile this Intent was created under, and the hash of its pinned copy in 00-intent/profile.yaml.", "properties": {"name": {"type": "string", "minLength": 1}, "sha256": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}}}, "discovery": {"type": "object", "additionalProperties": false, "required": ["included", "reason"], "description": "F6: whether discovery was run, and why. Recorded because declining discovery is a judgment somebody made, and \"nobody thought of it\" and \"we considered it and declined\" are different answers when a brownfield Intent goes wrong.", "properties": {"included": {"type": "boolean"}, "reason": {"type": "string", "minLength": 1}, "decided_at": {"type": "string", "format": "date-time"}}}, "schema_version": {"type": "integer", "minimum": 0, "description": "Record schema generation. Absent means 0: a record written before schema versioning existed."}, 
+    "id": {"type": "string", "pattern": "^I[0-9]{3,}$"},
+    "title": {"type": "string", "minLength": 1},
+    "intent_type": {"enum": ["feature", "bugfix", "refactor", "infrastructure", "security", "investigation_or_poc"]},
+    "status": {"enum": ["initialized", "framed", "specified", "planned", "building", "converging", "awaiting_acceptance", "completed", "aborted"]},
+    "autonomy_mode": {"const": "autonomous"},
+    "contains_model_behavior": {"type": "boolean"},
+    "artifact_mode": {"enum": ["compact", "full"]},
+    "trigger_flags": {"type": "object", "additionalProperties": {"type": "boolean"}},
+    "created_at": {"type": "string", "format": "date-time"}
+  }
+}

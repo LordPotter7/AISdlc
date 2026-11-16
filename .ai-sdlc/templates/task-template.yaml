@@ -1,0 +1,51 @@
+id: "{{TASK_ID}}"
+intent_id: "{{INTENT_ID}}"
+phase_id: "{{PHASE_ID}}"
+title: "{{TASK_TITLE}}"
+status: pending
+objective: "{{TASK_OBJECTIVE}}"
+requirements: ["{{REQUIREMENT_ID}}"]
+source_findings: []
+depends_on: []
+affected_paths: ["{{AFFECTED_PATH}}"]
+shared_resources: []
+inputs: ["{{INPUT}}"]
+expected_outputs: ["{{OUTPUT}}"]
+acceptance_criteria:
+  - id: "{{AC_ID}}"
+    verification_class: D
+    # Optional Class D companion. Coverage says which lines ran; a mutation threshold
+    # says whether anything would have noticed them being wrong. Surviving mutants come
+    # back as structured retry input.
+    # mutation_threshold: 0.85
+
+# Visible instruments. These may be authored by the implementing agent, and running them
+# proves only that the command ran.
+verification_commands: ["{{VERIFICATION_COMMAND}}"]
+
+# Held-out instruments. These may NOT be authored by the implementing agent — that is the
+# whole point. They come from the specification at Gate 2, from the verifier, or from a
+# human, and they are what turns "the command passed" into evidence about the requirement.
+holdout_commands: ["{{HOLDOUT_COMMAND}}"]
+holdout_authorship:
+  authored_by: "{{HOLDOUT_AUTHOR}}"
+  # specification | verifier | human | baseline | inherited
+  context: specification
+
+# Use only when a Task genuinely admits no held-out instrument. A waiver is a decision
+# with a name on it, not a silent omission — remove `holdout_commands` above if you use it.
+# holdout_waiver:
+#   reason: "{{WHY_NO_HELD_OUT_INSTRUMENT_IS_POSSIBLE}}"
+#   approved_by: "{{APPROVER}}"
+
+# Declare when this Task changes persistent state. Forward, rollback, and invariant checks
+# are ordinary Class D commands; expand and contract belong in separate phases.
+# migration:
+#   forward_command: "{{MIGRATE_UP}}"
+#   rollback_command: "{{MIGRATE_DOWN}}"
+#   invariant_commands: ["{{DATA_INVARIANT_CHECK}}"]
+#   reads_fields: []
+#   drops_fields: []
+
+parallelizable: false
+retry_limit: 2

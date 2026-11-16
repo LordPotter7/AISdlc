@@ -1,0 +1,8 @@
+{
+  "name": "aisdlc",
+  "version": "0.2.0",
+  "description": "Adaptive evidence-driven AI SDLC: guides an Intent through specification, planning, gated implementation, independent verification, human acceptance, and reusable lessons, backed by a deterministic runner that owns identifiers, state, gates, evidence, and traceability.",
+  "author": { "name": "rezaS0" },
+  "license": "Apache-2.0",
+  "keywords": ["sdlc", "lifecycle", "verification", "evidence", "governance"]
+}

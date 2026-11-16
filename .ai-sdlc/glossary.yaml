@@ -1,0 +1,10 @@
+# Repository glossary (Wave S3.2). One definition and one accountable owner per term,
+# shared by every Intent's specification. Owners edit this file directly; the runner only
+# adds terms promoted from an Intent (`ai-sdlc glossary promote`), and never overwrites.
+# Terms and aliases here are precise by declaration: `spec-lint` does not flag them.
+version: 1
+terms: []
+# - term: active customer
+#   definition: A customer with at least one paid order in the trailing 90 days.
+#   owner: finance-data
+#   aliases: [active account]

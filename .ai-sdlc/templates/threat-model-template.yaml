@@ -1,0 +1,35 @@
+# STRIDE per trust boundary. Required in 02-specification/ for a full Intent that is
+# security work, multi-tenant, or side-effecting; frozen at Gate 2 with the rest of the spec.
+#
+# Every boundary accounts for all six STRIDE categories: a threat, or a `not_applicable`
+# entry with a reason. A mitigated threat names the requirement that mitigates it and a
+# Class N criterion proving the attack fails. Standing security checks may be cited as
+# extra assurance, but only ones this Intent inherits, and never instead of Class N.
+intent_id: "{{INTENT_ID}}"
+
+boundaries:
+  - id: TB-001
+    name: "{{e.g. Public API -> order service}}"
+    description: "{{WHAT_CROSSES_THIS_BOUNDARY_AND_WHO_CONTROLS_EACH_SIDE}}"
+    not_applicable:
+      - category: repudiation
+        reason: "{{WHY_THIS_CATEGORY_CANNOT_OCCUR_HERE}}"
+
+threats:
+  - id: TM-001
+    boundary: TB-001
+    # spoofing | tampering | repudiation | information_disclosure | denial_of_service | elevation_of_privilege
+    stride: information_disclosure
+    description: "{{ATTACKER_PRECONDITION_ACTION_AND_IMPACT}}"
+    disposition: mitigate            # mitigate | accept | transfer
+    mitigated_by: [REQ-F-001]
+    verified_by: [AC-002]            # must include a Class N criterion
+    standing_checks: []              # e.g. [security/static-analysis], only if inherited
+
+  - id: TM-002
+    boundary: TB-001
+    stride: denial_of_service
+    description: "{{ATTACKER_PRECONDITION_ACTION_AND_IMPACT}}"
+    disposition: transfer
+    accepted_by: "{{NAMED_PERSON_OR_ROLE}}"
+    reason: "{{WHO_CARRIES_THE_RISK_AND_WHY}}"

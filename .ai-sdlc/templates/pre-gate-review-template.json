@@ -1,0 +1,14 @@
+{
+  "_comment": "Adversarial review before G2 (specification) or G3 (plan), recorded with: ai-sdlc pre-gate-review <Ixxx> <G2|G3> --from <this file>. JSON, not YAML. Written by the aisdlc-red-team agent from a fresh context; its model family must differ from the author's. Record it AFTER `advance <Ixxx> specified`, which rewrites inherited-controls.yaml and so changes what the review covers. Delete this _comment key. Schema: schemas/pre-gate-review.schema.json",
+  "intent_id": "{{INTENT_ID}}",
+  "gate": "G2",
+  "reviewer_agent_id": "aisdlc-red-team",
+  "reviewer_model": "{{REVIEWER_MODEL}}",
+  "author_model": "{{AUTHOR_MODEL}}",
+  "decision": "approved",
+  "checks": {"requirements_testable": "passed", "threats_answered": "passed"},
+  "findings": [
+    {"id": "PR-1", "severity": "medium", "summary": "{{WHAT_THE_REVIEWER_FOUND}}"}
+  ],
+  "recorded_at": "{{ISO_8601_TIMESTAMP}}"
+}

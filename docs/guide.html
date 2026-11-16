@@ -1,0 +1,917 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI SDLC Guide</title>
+<meta name="description" content="How to install, use, and work with the AI SDLC Claude Code plugin: concepts, a corrected step-by-step quickstart, the daily workflow, the lifecycle, verification, commands, and troubleshooting.">
+<script>
+  // Apply a saved theme before first paint, so a non-default choice never flashes.
+  try { const t = localStorage.getItem("aisdlc-guide-theme"); if (t) document.documentElement.dataset.theme = t; } catch { /* storage unavailable */ }
+</script>
+<style>
+:root{
+  --bg:#f6f5f1; --surface:#ffffff; --surface-2:#efede6; --surface-3:#e6e3da;
+  --ink:#191b20; --ink-2:#434852; --ink-3:#5c626d; --line:#dfdbd0; --line-2:#cbc6b8;
+  --accent:#3451d1; --accent-ink:#ffffff; --accent-soft:#e6ebff;
+  --you:#b93d0a; --you-soft:#fff0e6; --claude:#6d33d6; --claude-soft:#f2ecff; --runner:#0b6e66; --runner-soft:#e1f4f1;
+  --ok:#157a3c; --ok-soft:#e3f5ea; --warn:#9a5a06; --warn-soft:#fff5e0; --bad:#b4231b; --bad-soft:#fdeceb;
+  --code-bg:#15171d; --code-ink:#e8eaf0; --code-dim:#8f97a8; --code-cmd:#86e1c8;
+  --shadow:0 1px 2px rgba(20,20,30,.05),0 6px 20px rgba(20,20,30,.05);
+  --radius:14px; --side:264px;
+  --mono:ui-monospace,"Cascadia Code","JetBrains Mono",Menlo,Consolas,monospace;
+  --sans:"Segoe UI Variable Text","Segoe UI",system-ui,-apple-system,Roboto,"Helvetica Neue",Arial,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0e1014; --surface:#161920; --surface-2:#1d2129; --surface-3:#252a34;
+  --ink:#eceef3; --ink-2:#b8bfcc; --ink-3:#9098a8; --line:#2a2f3a; --line-2:#3a4150;
+  --accent:#93a6ff; --accent-ink:#0e1014; --accent-soft:#1d2546;
+  --you:#ff9a5c; --you-soft:#2c1b11; --claude:#bb9bff; --claude-soft:#231a37; --runner:#3fd6c2; --runner-soft:#0e2a26;
+  --ok:#5bd68a; --ok-soft:#10291a; --warn:#f5c04a; --warn-soft:#2a2210; --bad:#ff8a80; --bad-soft:#2d1514;
+  --code-bg:#0a0b0f; --shadow:0 1px 2px rgba(0,0,0,.35),0 6px 20px rgba(0,0,0,.3); color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#0e1014; --surface:#161920; --surface-2:#1d2129; --surface-3:#252a34;
+  --ink:#eceef3; --ink-2:#b8bfcc; --ink-3:#9098a8; --line:#2a2f3a; --line-2:#3a4150;
+  --accent:#93a6ff; --accent-ink:#0e1014; --accent-soft:#1d2546;
+  --you:#ff9a5c; --you-soft:#2c1b11; --claude:#bb9bff; --claude-soft:#231a37; --runner:#3fd6c2; --runner-soft:#0e2a26;
+  --ok:#5bd68a; --ok-soft:#10291a; --warn:#f5c04a; --warn-soft:#2a2210; --bad:#ff8a80; --bad-soft:#2d1514;
+  --code-bg:#0a0b0f; --shadow:0 1px 2px rgba(0,0,0,.35),0 6px 20px rgba(0,0,0,.3); color-scheme:dark;}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:28px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before{animation:none!important;transition:none!important}}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 var(--sans);-webkit-font-smoothing:antialiased;min-width:1100px}
+a{color:var(--accent);text-underline-offset:3px}
+p{margin:0 0 12px}
+code,kbd{font-family:var(--mono);font-size:.87em}
+:not(pre)>code{background:var(--surface-2);border:1px solid var(--line);padding:.06em .36em;border-radius:6px;white-space:nowrap}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+[hidden]{display:none!important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- layout: sidebar + content ---------- */
+.shell{display:grid;grid-template-columns:var(--side) minmax(0,1fr)}
+.side{position:sticky;top:0;height:100vh;overflow-y:auto;border-right:1px solid var(--line);background:var(--surface);padding:22px 16px 24px;display:flex;flex-direction:column;gap:18px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:750;font-size:17px;letter-spacing:-.01em;color:var(--ink);text-decoration:none;padding:0 8px}
+.logo{width:30px;height:30px;border-radius:9px;background:conic-gradient(from 210deg,var(--you),var(--claude),var(--runner),var(--you));display:grid;place-items:center;flex:none}
+.logo::after{content:"";width:12px;height:12px;border-radius:3px;background:var(--surface)}
+.ver{font:600 11px var(--mono);color:var(--ink-3);padding:0 8px;margin-top:-12px}
+.toc{display:flex;flex-direction:column;gap:1px}
+.toc .grp{font:650 11px var(--sans);text-transform:uppercase;letter-spacing:.09em;color:var(--ink-3);padding:14px 10px 6px}
+.toc a{display:flex;align-items:center;gap:10px;padding:6px 10px;border-radius:8px;color:var(--ink-2);text-decoration:none;font-size:14.5px;border-left:2px solid transparent}
+.toc a .n{font:600 11px var(--mono);color:var(--ink-3);width:18px}
+.toc a:hover{background:var(--surface-2);color:var(--ink)}
+.toc a.on{background:var(--accent-soft);color:var(--ink);font-weight:600}
+.toc a.on .n{color:var(--accent)}
+.side-foot{margin-top:auto;display:flex;gap:8px;padding:0 4px}
+.btn-ghost{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink-2);border-radius:10px;padding:8px 10px;font:600 13px var(--sans);cursor:pointer;text-decoration:none}
+.btn-ghost:hover{border-color:var(--line-2);color:var(--ink)}
+
+main{min-width:0}
+.content{max-width:1000px;margin:0 auto;padding:0 56px 80px}
+section{padding:64px 0 8px;scroll-margin-top:12px}
+section+section{border-top:1px solid var(--line);margin-top:48px}
+.kicker{font:650 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+h1{font-size:54px;line-height:1.04;letter-spacing:-.035em;margin:0 0 18px;max-width:17ch}
+h2{font-size:34px;line-height:1.15;letter-spacing:-.025em;margin:0 0 10px}
+h3{font-size:18px;line-height:1.3;letter-spacing:-.01em;margin:0 0 6px}
+.sub{color:var(--ink-2);font-size:17px;max-width:70ch;margin:0 0 28px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.muted{color:var(--ink-3)}
+/* grid children may shrink below their content, so long code scrolls inside its own box */
+.grid2>*,.grid3>*,.grid4>*,.steps3>*,.gloss>*,.chain>*,.pathbody>*,.panel>*,.help2>*,.sm>*,.cmds>*,.tree>*,.loop>*{min-width:0}
+
+/* chips that say who acts */
+.who{display:inline-flex;align-items:center;gap:6px;font:700 11px/1 var(--mono);letter-spacing:.06em;padding:5px 8px;border-radius:6px;white-space:nowrap}
+.who::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.who.you{color:var(--you);background:var(--you-soft)}
+.who.claude{color:var(--claude);background:var(--claude-soft)}
+.who.runner{color:var(--runner);background:var(--runner-soft)}
+.gate{display:inline-flex;align-items:center;gap:5px;font:700 11px/1 var(--mono);color:var(--you);background:var(--you-soft);padding:5px 8px;border-radius:999px;white-space:nowrap}
+
+/* code */
+pre{margin:0;background:var(--code-bg);color:var(--code-ink);border-radius:11px;padding:13px 78px 13px 16px;overflow-x:auto;font:13.5px/1.6 var(--mono)}
+pre .c{color:var(--code-dim)}
+pre .p{color:var(--code-cmd)}
+.codebox{position:relative;margin:10px 0 0}
+.codebox .lbl{position:absolute;top:-9px;left:12px;font:700 10px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;background:var(--surface);color:var(--ink-3);border:1px solid var(--line);padding:3px 6px;border-radius:5px}
+.copy{position:absolute;top:8px;right:8px;font:600 12px var(--sans);border:1px solid #30353f;background:#1f232b;color:#d2d6de;padding:5px 10px;border-radius:7px;cursor:pointer}
+.copy:hover{background:#2a2f39}
+/* in half-width columns, wrap long commands instead of hiding their ends behind a scrollbar */
+.pathbody pre,.panel pre{white-space:pre-wrap;overflow-wrap:anywhere}
+
+/* ---------- hero ---------- */
+.hero{padding:76px 0 20px}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--ink-2);background:var(--surface);border:1px solid var(--line);padding:5px 12px;border-radius:999px;margin-bottom:22px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--ok)}
+.grad{background:linear-gradient(90deg,var(--you),var(--claude) 48%,var(--runner));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lede{font-size:20px;color:var(--ink-2);max-width:64ch;margin:0 0 28px}
+.cta{display:flex;gap:10px;margin-bottom:40px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:11px 18px;border-radius:11px;font-weight:650;font-size:15px;text-decoration:none;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn:hover{filter:brightness(1.04)}
+.flowstrip{display:grid;grid-template-columns:repeat(7,1fr);gap:0;padding:22px 24px}
+.fs{position:relative;text-align:center;padding:0 4px}
+.fs .ic{width:40px;height:40px;margin:0 auto 8px;border-radius:12px;display:grid;place-items:center;font:700 13px var(--mono);background:var(--surface-2);color:var(--ink-2);border:1px solid var(--line)}
+.fs b{display:block;font-size:14px;text-transform:capitalize}
+.fs .g{margin-top:6px;min-height:22px}
+.fs:not(:last-child)::after{content:"";position:absolute;top:20px;left:calc(50% + 26px);right:calc(-50% + 26px);height:2px;background:var(--line-2)}
+.principles{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+.principle{padding:20px 22px}
+.principle b{display:block;font-size:16px;margin-bottom:4px}
+.principle span{color:var(--ink-2);font-size:15px}
+
+/* fit */
+.fit{padding:22px 24px}
+.fit h3{display:flex;align-items:center;gap:8px}
+.fit ul{margin:10px 0 0;padding:0;list-style:none}
+.fit li{padding:7px 0 7px 28px;position:relative;color:var(--ink-2);border-top:1px dashed var(--line)}
+.fit li:first-child{border-top:0}
+.fit.yes li::before{content:"✓";position:absolute;left:4px;color:var(--ok);font-weight:800}
+.fit.no li::before{content:"–";position:absolute;left:6px;color:var(--ink-3);font-weight:800}
+
+/* install */
+.steps3{display:flex;flex-direction:column;gap:12px}
+.istep{padding:18px 22px;display:grid;grid-template-columns:40px minmax(0,1fr) minmax(0,1.3fr);gap:20px;align-items:center}
+.istep .num{width:36px;height:36px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font:800 15px var(--mono);display:grid;place-items:center}
+.istep p{color:var(--ink-2);font-size:15px;margin:0}
+.istep .codes{display:flex;flex-direction:column;gap:8px}
+.istep .codes .codebox{margin:0}
+.req{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:16px}
+.req div{padding:16px 20px;border-left:1px solid var(--line)}
+.req div:first-child{border-left:0}
+.req b{display:block;font-size:15px}
+.req span{color:var(--ink-2);font-size:14px}
+.note{display:flex;gap:12px;padding:14px 18px;border-radius:12px;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);margin-top:16px;font-size:15px;color:var(--ink-2)}
+.note.warn{border-left-color:var(--warn)}
+.note.bad{border-left-color:var(--bad)}
+.note b{color:var(--ink)}
+
+/* concepts */
+.tree{padding:24px 28px;display:grid;grid-template-columns:1.2fr 1fr;gap:28px;align-items:center}
+.lvl{display:flex;flex-direction:column;gap:10px}
+.lv{border:1px solid var(--line);border-radius:12px;padding:12px 16px;background:var(--surface-2)}
+.lv b{font-size:15px}
+.lv span{display:block;font:12.5px var(--mono);color:var(--ink-3)}
+.lv.i2{margin-left:28px}.lv.i3{margin-left:56px}
+.lv.i1{border-color:color-mix(in srgb,var(--accent) 45%,var(--line));background:var(--accent-soft)}
+.gloss{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px}
+.term{padding:16px 18px}
+.term dt{font-weight:700;font-size:15px;margin-bottom:4px;display:flex;justify-content:space-between;gap:8px}
+.term dd{margin:0;color:var(--ink-2);font-size:14.5px}
+
+/* actors */
+.actor{padding:22px;border-top:4px solid var(--c)}
+.actor ul{margin:12px 0 0;padding:0;list-style:none}
+.actor li{padding:6px 0 6px 22px;position:relative;color:var(--ink-2);font-size:15px}
+.actor li::before{content:"";position:absolute;left:3px;top:14px;width:8px;height:8px;border-radius:2px;background:var(--c)}
+.actor li.never{color:var(--ink-2)}
+.actor li.never::before{background:none;width:auto;height:auto;top:6px;left:2px;content:"✕";color:var(--bad);font:800 12px var(--sans)}
+.motto{margin-top:16px;padding:16px 22px;border-radius:var(--radius);background:var(--runner-soft);border:1px solid color-mix(in srgb,var(--runner) 30%,transparent);font-size:17px}
+.motto b{color:var(--runner)}
+
+/* quickstart timeline */
+.mode{display:inline-flex;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:4px;gap:4px;margin-bottom:22px}
+.mode button{border:0;background:none;color:var(--ink-2);font:650 14px var(--sans);padding:8px 14px;border-radius:9px;cursor:pointer}
+.mode button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.tl{list-style:none;margin:0;padding:0;position:relative}
+.tl::before{content:"";position:absolute;left:19px;top:12px;bottom:12px;width:2px;background:var(--line)}
+.st{position:relative;display:grid;grid-template-columns:40px 1fr;gap:18px;margin-bottom:14px}
+.st .bullet{width:40px;height:40px;border-radius:50%;background:var(--surface);border:2px solid var(--line-2);display:grid;place-items:center;font:800 14px var(--mono);color:var(--ink-2);position:relative;z-index:1;cursor:pointer}
+.st.you .bullet{border-color:var(--you);color:var(--you)}
+.st.done .bullet{background:var(--ok);border-color:var(--ok);color:var(--bg)}
+.st .body{padding:16px 20px}
+.st .head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.st .head h3{margin:0;font-size:17px}
+.st .head .sp{flex:1}
+.st p{color:var(--ink-2);font-size:15px;margin:0}
+.st.you .body{border-color:color-mix(in srgb,var(--you) 35%,var(--line));background:linear-gradient(90deg,var(--you-soft),var(--surface) 55%)}
+.st .chk{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--ink-3);cursor:pointer;user-select:none}
+.st .chk input{accent-color:var(--ok);width:16px;height:16px}
+.st[data-mode="compact"]{display:none}
+.tl.compact .st[data-mode="full"]{display:none}
+.tl.compact .st[data-mode="compact"]{display:grid}
+.qs-progress{display:flex;align-items:center;gap:12px;margin:0 0 18px;font-size:14px;color:var(--ink-2)}
+.bar{flex:1;max-width:360px;height:6px;background:var(--surface-3);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--ok));transition:width .3s}
+
+/* daily */
+.loop{display:grid;grid-template-columns:repeat(4,1fr);gap:0;padding:8px}
+.lp{padding:18px 18px 20px;position:relative}
+.lp:not(:last-child)::after{content:"→";position:absolute;right:-8px;top:24px;color:var(--ink-3);font-size:18px}
+.lp .k{font:800 12px var(--mono);color:var(--accent)}
+.lp p{color:var(--ink-2);font-size:14.5px;margin:6px 0 0}
+.files{padding:20px 24px}
+.files pre{background:var(--surface-2);color:var(--ink);padding:14px 16px;border:1px solid var(--line)}
+.files pre .c{color:var(--ink-3)}
+.files pre b{color:var(--runner);font-weight:650}
+
+/* lifecycle tabs */
+.rail{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-bottom:14px}
+.stage{appearance:none;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:12px;cursor:pointer;color:var(--ink);transition:border-color .15s,box-shadow .15s}
+.stage:hover{border-color:var(--line-2)}
+.stage[aria-selected="true"]{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.stage .n{font:650 11px var(--mono);color:var(--ink-3)}
+.stage .t{display:block;font-weight:750;font-size:15px;margin:2px 0 8px;text-transform:capitalize}
+.gate.none{color:var(--ink-3);background:var(--surface-2)}
+.panel{display:grid;grid-template-columns:1.25fr 1fr;overflow:hidden}
+.panel .main{padding:24px 26px}
+.panel .aside{padding:24px 26px;background:var(--surface-2);border-left:1px solid var(--line)}
+.panel h4{margin:0 0 8px;font:700 12px var(--sans);text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3)}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 4px}
+.chip{font:500 12.5px var(--mono);padding:4px 9px;border-radius:7px;background:var(--surface-2);border:1px solid var(--line);color:var(--ink-2)}
+.refuse{list-style:none;margin:0 0 18px;padding:0}
+.refuse li{padding:4px 0 4px 22px;position:relative;font-size:14.5px;color:var(--ink-2)}
+.refuse li::before{content:"✕";position:absolute;left:2px;color:var(--bad);font-weight:800}
+[role="tabpanel"][hidden]{display:none}
+
+/* verification */
+.cls{padding:20px}
+.cls .L{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font:800 22px var(--mono);color:#fff;background:var(--k);margin-bottom:12px}
+.cls p{margin:4px 0 0;color:var(--ink-2);font-size:14.5px}
+.cls .ex{margin-top:10px;font:12.5px var(--mono);color:var(--ink-3)}
+.chain{display:grid;grid-template-columns:repeat(5,1fr);gap:26px;margin-top:20px}
+.link{padding:16px;position:relative}
+.link:not(:last-child)::after{content:"→";position:absolute;right:-20px;top:50%;transform:translateY(-50%);color:var(--ink-3);font-size:18px}
+.link .i{font:750 11px var(--mono);color:var(--runner)}
+.link p{margin:4px 0 0;font-size:14px;color:var(--ink-2)}
+.callout{margin-top:16px;padding:16px 20px;border-radius:12px;background:var(--claude-soft);border:1px solid color-mix(in srgb,var(--claude) 30%,transparent);color:var(--ink-2)}
+.callout b{color:var(--ink)}
+
+/* state machine */
+.sm{display:grid;grid-template-columns:1fr 300px;gap:16px;align-items:start}
+.smsvg{padding:14px}
+.smsvg svg{width:100%;height:auto;display:block}
+.node rect{fill:var(--surface);stroke:var(--line-2);stroke-width:1.5;transition:fill .2s,stroke .2s}
+.node text{fill:var(--ink);font:650 13px var(--mono);pointer-events:none}
+.node{cursor:pointer}
+.node:focus{outline:none}
+.node:focus-visible rect{stroke:var(--accent);stroke-width:3}
+.node.on rect{fill:var(--accent);stroke:var(--accent)}
+.node.on text{fill:var(--accent-ink)}
+.node.next rect{stroke:var(--accent);stroke-width:2.5;fill:var(--accent-soft)}
+.node.term rect{stroke-dasharray:4 3}
+.edge{stroke:var(--line-2);stroke-width:1.6;fill:none}
+.edge.on{stroke:var(--accent);stroke-width:2.6}
+.smside{padding:20px}
+.smside .stn{font:750 20px var(--mono);margin:0 0 6px}
+.legend{display:flex;gap:16px;font-size:13px;color:var(--ink-3);margin-top:10px;padding:0 4px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:16px;height:10px;border-radius:3px;border:1.5px solid var(--line-2);display:inline-block}
+.legend i.d{border-style:dashed}
+.trtable{width:100%;border-collapse:collapse;font-size:14px;margin-top:4px}
+.trtable th,.trtable td{text-align:left;padding:7px 10px;border-top:1px solid var(--line);vertical-align:top}
+.trtable th{font:700 12px var(--sans);text-transform:uppercase;letter-spacing:.06em;color:var(--ink-3);border-top:0}
+.trtable td:first-child{font-family:var(--mono);font-weight:650;white-space:nowrap}
+details.more{margin-top:14px}
+details.more>summary{cursor:pointer;color:var(--accent);font-weight:600;font-size:14.5px}
+
+/* paths */
+.tabs{display:flex;gap:8px;margin-bottom:14px}
+.tab{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:8px 15px;font:650 14px var(--sans);cursor:pointer}
+.tab .k{font-family:var(--mono);color:var(--accent);margin-right:6px}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tab[aria-selected="true"] .k{color:var(--bg)}
+.pathbody{padding:24px 26px;display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.ol{counter-reset:s;list-style:none;margin:0;padding:0}
+.ol li{counter-increment:s;position:relative;padding:0 0 14px 38px;color:var(--ink-2);font-size:15px}
+.ol li::before{content:counter(s);position:absolute;left:0;top:0;width:26px;height:26px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font:750 12px var(--mono);display:grid;place-items:center}
+.time{display:inline-block;font:700 12px var(--mono);color:var(--ok);background:var(--ok-soft);padding:3px 8px;border-radius:6px;margin-bottom:10px}
+
+/* commands */
+.search{display:flex;align-items:center;gap:10px;padding:11px 16px;margin-bottom:14px}
+.search input{flex:1;border:0;background:none;color:var(--ink);font:16px var(--sans);outline:none}
+.filters{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.filters button{border:1px solid var(--line);background:var(--surface);color:var(--ink-2);border-radius:999px;padding:5px 12px;font:600 13px var(--sans);cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--ink)}
+.cmds{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.cmd{padding:15px 18px;display:grid;grid-template-columns:1fr auto;gap:2px 12px}
+.cmd .nm{font:750 14.5px var(--mono);color:var(--accent)}
+.cmd .grp{font:700 10.5px var(--mono);text-transform:uppercase;letter-spacing:.07em;color:var(--ink-3);align-self:center}
+.cmd .ar{grid-column:1/-1;font:12.5px var(--mono);color:var(--ink-2);word-break:break-word}
+.cmd .ds{grid-column:1/-1;color:var(--ink-2);font-size:14.5px;margin-top:4px}
+.empty{color:var(--ink-3);padding:20px;text-align:center}
+
+/* help */
+.faq details{border:1px solid var(--line);background:var(--surface);border-radius:12px;margin-bottom:8px}
+.faq summary{cursor:pointer;padding:13px 18px;font-weight:650;list-style:none;display:flex;gap:12px;align-items:baseline}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary code{font-size:.85em}
+.faq summary::after{content:"+";margin-left:auto;font:650 18px var(--mono);color:var(--ink-3)}
+.faq details[open] summary::after{content:"–"}
+.faq .bd{padding:0 18px 16px;color:var(--ink-2);font-size:15px}
+.help2{display:grid;grid-template-columns:1.35fr 1fr;gap:24px;align-items:start}
+
+footer{border-top:1px solid var(--line);margin-top:64px;padding:28px 0;color:var(--ink-3);font-size:14px;display:flex;justify-content:space-between;gap:16px}
+
+/* print: show every panel, open every answer, drop chrome */
+@media print{
+  body{min-width:0;background:#fff;color:#000;font-size:11pt}
+  .side,.copy,.mode,.filters,.search,.chk,.cta,#theme{display:none!important}
+  .shell{display:block}.content{max-width:none;padding:0}
+  .st[data-mode]{display:grid!important}
+  [role="tabpanel"],[role="tabpanel"][hidden]{display:grid!important;margin-bottom:12px}
+  .cmd[hidden]{display:grid!important}
+  .card{box-shadow:none;break-inside:avoid}
+  pre{background:#f3f3f3;color:#000;white-space:pre-wrap}
+  .faq details>.bd{display:block}
+  section{padding-top:24px}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<aside class="side" aria-label="Guide navigation">
+  <a class="brand" href="#top"><span class="logo" aria-hidden="true"></span>AI SDLC</a>
+  <div class="ver">v0.2.0 · guide</div>
+  <nav class="toc" aria-label="Sections">
+    <div class="grp">Start</div>
+    <a href="#fit"><span class="n">01</span>Is this for you?</a>
+    <a href="#install"><span class="n">02</span>Install</a>
+    <a href="#concepts"><span class="n">03</span>Core concepts</a>
+    <a href="#who"><span class="n">04</span>Who decides</a>
+    <div class="grp">Use it</div>
+    <a href="#quickstart"><span class="n">05</span>Quickstart</a>
+    <a href="#daily"><span class="n">06</span>Daily workflow</a>
+    <a href="#paths"><span class="n">07</span>Onboarding paths</a>
+    <div class="grp">Understand it</div>
+    <a href="#lifecycle"><span class="n">08</span>Lifecycle stages</a>
+    <a href="#verify"><span class="n">09</span>Verification</a>
+    <a href="#tasks"><span class="n">10</span>Task states</a>
+    <div class="grp">Reference</div>
+    <a href="#commands"><span class="n">11</span>Commands</a>
+    <a href="#help"><span class="n">12</span>Troubleshooting</a>
+  </nav>
+  <div class="side-foot">
+    <button class="btn-ghost" id="theme" type="button" aria-pressed="false" title="Switch light / dark theme">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>Theme
+    </button>
+    <button class="btn-ghost" type="button" onclick="window.print()" title="Print or save as PDF: every tab and answer is expanded">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>Print
+    </button>
+  </div>
+</aside>
+
+<main id="top">
+<div class="content">
+
+<!-- ================= HERO ================= -->
+<header class="hero">
+  <span class="eyebrow"><span class="dot"></span>Claude Code plugin · Python 3.12+ · Apache-2.0</span>
+  <h1>Ship AI-written code you can <span class="grad">actually audit.</span></h1>
+  <p class="lede">AI SDLC carries one software change from an idea to accepted, verified code. Claude drafts and builds. A deterministic <b>runner</b> keeps the record and refuses anything out of order. <b>You</b> approve five gates. Every step is written down, so you can audit it months later.</p>
+  <div class="cta">
+    <a class="btn primary" href="#install">Install in 3 steps →</a>
+    <a class="btn" href="#quickstart">Walk through a first change</a>
+  </div>
+
+  <div class="card flowstrip" role="img" aria-label="One change flows through seven stages: register, frame (gate G1), specify (G2), plan (G3), build (G4), converge (G5), close.">
+    <div class="fs"><div class="ic">0</div><b>register</b><div class="g"></div></div>
+    <div class="fs"><div class="ic">1</div><b>frame</b><div class="g"><span class="gate">G1</span></div></div>
+    <div class="fs"><div class="ic">2</div><b>specify</b><div class="g"><span class="gate">G2</span></div></div>
+    <div class="fs"><div class="ic">3</div><b>plan</b><div class="g"><span class="gate">G3</span></div></div>
+    <div class="fs"><div class="ic">4</div><b>build</b><div class="g"><span class="gate">G4</span></div></div>
+    <div class="fs"><div class="ic">5</div><b>converge</b><div class="g"><span class="gate">G5</span></div></div>
+    <div class="fs"><div class="ic">6</div><b>close</b><div class="g"></div></div>
+  </div>
+
+  <div class="principles">
+    <div class="card principle"><b>The agent being judged never writes the test that judges it.</b><span>Some checks are <em>held out</em>: written by the spec, a reviewer, or a human, never by the implementer. A passing test only proves it ran, not that it could have failed.</span></div>
+    <div class="card principle"><b>A review counts only if a different model family did it.</b><span>A reviewer on the implementer's model family is reviewing its own work, whatever its persona is called. The runner checks the family and rejects reviews that share it.</span></div>
+  </div>
+</header>
+
+<!-- ================= 01 FIT ================= -->
+<section id="fit">
+  <div class="kicker">01 · Is this for you?</div>
+  <h2>Use it when the record matters</h2>
+  <p class="sub">The framework adds gates and evidence to every change. That's worth it when someone will later ask "how do we know this works?", and overkill for a weekend script.</p>
+  <div class="grid2">
+    <div class="card fit yes"><h3>Good fit</h3><ul>
+      <li>A team lets Claude write production code and needs to show it was checked</li>
+      <li>Changes touch security, data, model behaviour, or public interfaces</li>
+      <li>You want traceability from requirement → Task → evidence → acceptance</li>
+      <li>Compliance asks for evidence (NIST AI RMF, ISO/IEC 42001, SSDF export)</li>
+      <li>An existing codebase you want to change without regressions</li>
+    </ul></div>
+    <div class="card fit no"><h3>Probably skip it</h3><ul>
+      <li>Throwaway prototypes and spikes</li>
+      <li>Solo scripts nobody else will rely on</li>
+      <li>You need release or deployment automation: both stay <b>outside</b> this lifecycle</li>
+      <li>You need signed, third-party-verifiable provenance: evidence is hashed, not signed</li>
+    </ul></div>
+  </div>
+  <div class="note"><span>💡</span><span><b>Installing changes nothing until you opt a repository in.</b> The guard hooks stay silent in every repository without a <code>.ai-sdlc/</code> folder, so the plugin is safe to install once and use where you choose.</span></div>
+</section>
+
+<!-- ================= 02 INSTALL ================= -->
+<section id="install">
+  <div class="kicker">02 · Install</div>
+  <h2>Three steps, nothing on your PATH</h2>
+  <p class="sub">The runner is a Python script inside the plugin folder, run with the <code>python3</code> you already have. There's no package to install and nothing else to upgrade.</p>
+  <div class="steps3">
+    <div class="card istep"><div class="num">1</div><div><h3>Add the marketplace</h3><p>In Claude Code, add this repository from GitHub, or from a local checkout.</p></div><div class="codes"><div class="codebox"><pre><span class="p">/plugin</span> marketplace add &lt;owner&gt;/&lt;repo&gt;</pre><button class="copy" type="button">Copy</button></div></div></div>
+    <div class="card istep"><div class="num">2</div><div><h3>Install the plugin</h3><p>Use the marketplace name the previous step <b>reported</b>. <code>/plugin marketplace list</code> shows it.</p></div><div class="codes"><div class="codebox"><pre><span class="p">/plugin</span> install aisdlc@aisdlc-local</pre><button class="copy" type="button">Copy</button></div></div></div>
+    <div class="card istep"><div class="num">3</div><div><h3>Opt a repository in</h3><p>Open your project in Claude Code, scaffold it, then check readiness.</p></div><div class="codes"><div class="codebox"><pre><span class="p">/aisdlc:init</span></pre><button class="copy" type="button">Copy</button></div><div class="codebox"><pre><span class="p">/aisdlc:doctor</span></pre><button class="copy" type="button">Copy</button></div></div></div>
+  </div>
+  <div class="card req">
+    <div><b>Claude Code</b><span>with the plugin installed</span></div>
+    <div><b>Python 3.12+</b><span>on <code>PATH</code> as <code>python3</code>, <code>python</code> or <code>py</code></span></div>
+    <div><b>Git</b><span>every evidence manifest is pinned to a commit</span></div>
+  </div>
+  <div class="note"><span>⌨️</span><span><b>About <code>ai-sdlc</code> in this guide.</b> Most work uses the <code>/aisdlc:*</code> slash commands. Where a raw runner command appears, <code>ai-sdlc</code> is shorthand for <code>python3 "${CLAUDE_PLUGIN_ROOT}/scripts/lifecycle.py"</code>. Nothing named <code>ai-sdlc</code> is on your <code>PATH</code>. Inside Claude Code you rarely type these yourself; the slash commands run them for you. Code boxes are labelled <b>Claude Code</b> or <b>runner</b> so you know where each one goes.</span></div>
+  <div class="note warn"><span>⚠️</span><span><b>Read the <code>runner</code> line of <code>doctor</code> first.</b> If it says <code>fail</code>, the guard hooks can't run. They warn and allow everything rather than block. Fix Python before going further. On a brand-new repository, <code>warn</code> for <code>delivery-root</code> and <code>runtime-state</code> is expected; both clear after your first change.</span></div>
+</section>
+
+<!-- ================= 03 CONCEPTS ================= -->
+<section id="concepts">
+  <div class="kicker">03 · Core concepts</div>
+  <h2>Twelve words you'll see everywhere</h2>
+  <p class="sub">Work is organised as a strict three-level hierarchy. There are no subtasks, by design.</p>
+  <div class="card tree">
+    <div class="lvl" aria-label="Work hierarchy">
+      <div class="lv i1"><b>Intent</b> <span>I001 · one outcome you want, e.g. "Add a health endpoint"</span></div>
+      <div class="lv i2"><b>Build Phase</b> <span>I001-P00 · walking skeleton, then I001-P01, P02…</span></div>
+      <div class="lv i3"><b>Task</b> <span>I001-P00-T001 · one verifiable unit of work</span></div>
+    </div>
+    <div>
+      <p>Each <b>Intent</b> moves through seven stages and five human gates. It is planned into <b>Build Phases</b>, and each phase holds <b>Tasks</b>. Every Task traces to exactly one approved requirement, finding, or decision, and proves itself with captured evidence.</p>
+      <p class="muted" style="margin:0;font-size:14.5px">Identifiers are allocated by the runner, never chosen by hand, and are never reused, even after a failure.</p>
+    </div>
+  </div>
+  <dl class="gloss">
+    <div class="card term"><dt>Gate <span class="gate">G1–G5</span></dt><dd>A decision only a human records. G3 lets any Task run. G4 accepts the walking skeleton. G5 is final acceptance.</dd></div>
+    <div class="card term"><dt>Runner</dt><dd>The deterministic script that owns IDs, state, gates, locks, evidence and the audit log. It lives in the plugin folder, outside your repo.</dd></div>
+    <div class="card term"><dt>Walking skeleton (P00)</dt><dd>The thinnest end-to-end slice that proves the approach. Later phases run only after you approve it at G4.</dd></div>
+    <div class="card term"><dt>Acceptance criterion</dt><dd>A testable condition with exactly one verification class: <b>D</b>, <b>S</b>, <b>J</b> or <b>N</b> (see <a href="#verify">Verification</a>).</dd></div>
+    <div class="card term"><dt>Visible vs held-out</dt><dd>Visible checks may be written by the implementer. Held-out checks may not: they come from the spec, a reviewer, or a human.</dd></div>
+    <div class="card term"><dt>Evidence manifest</dt><dd>What <code>verify-task</code> writes: commands, exit codes, SHA-256 hashes and the Git commit, with secrets masked first.</dd></div>
+    <div class="card term"><dt>Model family</dt><dd>A model ID reduced to vendor and name: <code>claude-opus-5-5</code> → <code>claude-opus</code>. Opus and Sonnet count as different families.</dd></div>
+    <div class="card term"><dt>Pre-gate review</dt><dd>A red-team review of the spec (before G2) or plan (before G3), from a fresh context. The runner refuses G3 without one.</dd></div>
+    <div class="card term"><dt>Convergence</dt><dd>The final check before G5: evidence, spec pins, traceability and held-out coverage, all on a clean, committed tree.</dd></div>
+    <div class="card term"><dt>Compact vs full</dt><dd>Compact is for small, deterministic changes; G2 and G3 can be approved together. Full is for everything else, and always for model behaviour.</dd></div>
+    <div class="card term"><dt>Conformance gap</dt><dd>Visible checks pass but held-out checks fail: the code fits its tests, not the requirement. Fix the code, never the held-out test.</dd></div>
+    <div class="card term"><dt>Lesson</dt><dd>A severe finding promoted at close into durable enforcement (a regression eval, policy or checklist) that later Intents inherit.</dd></div>
+  </dl>
+</section>
+
+<!-- ================= 04 WHO ================= -->
+<section id="who">
+  <div class="kicker">04 · Who decides</div>
+  <h2>Three actors, and only one keeps score</h2>
+  <p class="sub">Anything a conversation can't be trusted with belongs to code outside the conversation. Every step in this guide is labelled with who acts.</p>
+  <div class="grid3">
+    <div class="card actor" style="--c:var(--you)"><span class="who you">YOU</span><h3 style="margin-top:10px">Approve</h3><ul>
+      <li>Approve gates G1–G5 explicitly</li><li>Say what "done" means; accept the result</li><li>Resolve escalations when a Task is blocked</li><li>Write or approve held-out checks</li></ul></div>
+    <div class="card actor" style="--c:var(--claude)"><span class="who claude">CLAUDE</span><h3 style="margin-top:10px">Draft and build</h3><ul>
+      <li>Frame briefs, write specs and plans</li><li>Implement Tasks and visible tests</li><li>Review from a fresh context (verifier, red-team)</li>
+      <li class="never">Never approves a gate, or infers your approval</li><li class="never">Never edits runner-owned files or held-out checks</li></ul></div>
+    <div class="card actor" style="--c:var(--runner)"><span class="who runner">RUNNER</span><h3 style="margin-top:10px">Keep the record</h3><ul>
+      <li>Allocates permanent identifiers</li><li>Owns state, gates, locks and retry limits</li><li>Captures evidence pinned to a commit</li><li>Generates traceability and the audit log</li></ul></div>
+  </div>
+  <div class="motto">Rule of thumb: <b>if the runner didn't record it, it didn't happen.</b> A refusal from the runner is the design working. It names what's missing.</div>
+</section>
+
+<!-- ================= 05 QUICKSTART ================= -->
+<section id="quickstart">
+  <div class="kicker">05 · Quickstart</div>
+  <h2>Your first change, end to end</h2>
+  <p class="sub">The complete sequence for one Intent, with every gate. <span class="who you" style="vertical-align:1px">YOU</span> steps are decisions only you can make. Claude stops and waits for each one. Tick steps off as you go; your progress is saved in this browser.</p>
+  <div class="mode" role="group" aria-label="Artifact mode">
+    <button type="button" aria-pressed="true" data-mode="full">Full mode</button>
+    <button type="button" aria-pressed="false" data-mode="compact">Compact mode</button>
+  </div>
+  <div class="qs-progress"><div class="bar" aria-hidden="true"><i id="qsBar"></i></div><span id="qsCount">0 of 13 done</span></div>
+  <ol class="tl" id="tl">
+    <li class="st" data-step="1"><div class="bullet" aria-hidden="true">1</div><div class="card body"><div class="head"><h3>Set up the repository</h3><span class="who claude">CLAUDE</span><span class="sp"></span><label class="chk"><input type="checkbox">done</label></div>
+      <p>Scaffolds <code>.ai-sdlc/</code>, <code>AGENTS.md</code> and the gitignore rules, then reports readiness. Fix every <code>fail</code> first. Once per repository.</p>
+      <div class="codebox"><span class="lbl">Claude Code</span><pre><span class="p">/aisdlc:init</span></pre><button class="copy" type="button">Copy</button></div>
+      <div class="codebox"><span class="lbl">Claude Code</span><pre><span class="p">/aisdlc:doctor</span></pre><button class="copy" type="button">Copy</button></div></div></li>
+
+    <li class="st you" data-step="2"><div class="bullet" aria-hidden="true">2</div><div class="card body"><div class="head"><h3>Fill in the project context</h3><span class="who you">YOU</span><span class="sp"></span><label class="chk"><input type="checkbox">done</label></div>
+      <p>Edit <code>.ai-sdlc/project-context.md</code>: your conventions and your real verification commands (tests, lint, type check). They become Class D criteria for every Task, so an empty stub weakens everything. This is the highest-value five minutes of setup. Claude can draft it from your repo for you to check.</p></div></li>
+
+    <li class="st" data-step="3"><div class="bullet" aria-hidden="true">3</div><div class="card body"><div class="head"><h3>Start an Intent</h3><span class="who claude">CLAUDE</span><span class="gate">stops at G1</span><span class="sp"></span><label class="chk"><input type="checkbox">done</label></div>
+      <p>Claude asks what should change and for whom, <b>agrees the mode with you</b> (compact or full), registers the Intent (the runner assigns <code>I001</code>), drafts the brief and sets trigger flags such as <code>contains_model_behavior</code>.</p>
+      <div class="codebox"><span class="lbl">Claude Code</span><pre><span class="p">/aisdlc:start</span> "Add a health endpoint"</pre><button class="copy" type="button">Copy</button></div></div></li>
+
+    <li class="st you" data-step="4"><div class="bullet" aria-hidden="true">4</div><div class="card body"><div class="head"><h3>Approve the brief</h3><span class="who you">YOU</span><span class="gate">G1</span><span class="sp"></span><label class="chk"><input type="checkbox">done</label></div>
+      <p>Read the brief and its trigger flags. Want a summary first? <code>/aisdlc:gate-packet I001 G1</code> builds one. Replace <code>you</code> with your name. The approver is a plain argument, not <code>--approver</code>.</p>
+      <div class="codebox"><span class="lbl">Claude Code</span><pre><span class="p">/aisdlc:gate</span> I001 G1 you</pre><button class="copy" type="button">Copy</button></div></div></li>
+
+    <li class="st" data-step="5"><div class="bullet" aria-hidden="true">5</div><div class="card body"><div class="head"><h3>Specify</h3><span class="who claude">CLAUDE</span><span class="gate">stops at G2</span><span class="sp"></span><label class="chk"><input type="checkbox">done</label></div>
+      <p>Writes testable requirements and acceptance criteria, each with one class (D/S/J/N), runs the spec linter, and has the <code>aisdlc-red-team</code> agent review the spec from a fresh context.</p>
+      <div class="codebox"><span class="lbl">Claude Code</span><pre><span class="p">/aisdlc:specify</span> I001</pre><button class="copy" type="button">Copy</button></div></div></li>
+
+    <li class="st you" data-step="6" data-mode="full"><div class="bullet" aria-hidden="true">6</div><div class="card body"><div class="head"><h3>Approve the specification</h3><span class="who you">YOU</span><span class="gate">G2</span><span class="sp"></span><label class="chk"><input type="checkbox">done</label></div>
+      <p>Approving G2 <b>freezes</b> the spec. Changing it later means reopening G2, which invalidates evidence pinned to it.</p>
+      <div class="codebox"><span class="lbl">Claude Code</span><pre><span class="p">/aisdlc:gate</span> I001 G2 you</pre><button class="copy" type="button">Copy</button></div></div></li>
+
+    <li class="st" data-step="7"><div class="bullet" aria-hidden="true">7</div><div class="card body"><div class="head"><h3>Plan</h3><span class="who claude">CLAUDE</span><span class="gate">stops at G3</span><span class="sp"></span><label class="chk"><input type="checkbox">done</label></div>
+      <p>Records architecture decisions, then breaks the work into Build Phases (<code>P00</code> walking skeleton first) and Tasks. Each Task declares its paths, resources, criteria and commands. A red-team review of the plan follows; the runner refuses G3 without it.</p>
+      <div class="codebox"><span class="lbl">Claude Code</span><pre><span class="p">/aisdlc:plan</span> I001</pre><button class="copy" type="button">Copy</button></div></div></li>
+
+    <li class="st you" data-step="8" data-mode="full"><div class="bullet" aria-hidden="true">8</div><div class="card body"><div class="head"><h3>Approve the plan</h3><span class="who you">YOU</span><span class="gate">G3</span><span class="sp"></span><label class="chk"><input type="checkbox">done</label></div>
+      <p>G3 is what allows <b>any</b> Task to run. Check the Task list, each Task's traceability, and its held-out checks.</p>
+      <div class="codebox"><span class="lbl">Claude Code</span><pre><span class="p">/aisdlc:gate</span> I001 G3 you</pre><button class="copy" type="button">Copy</button></div></div></li>
+
+    <li class="st you" data-step="8" data-mode="compact"><div class="bullet" aria-hidden="true">8</div><div class="card body"><div class="head"><h3>Approve spec and plan together</h3><span class="who you">YOU</span><span class="gate">G2-G3</span><span class="sp"></span><label class="chk"><input type="checkbox">done</label></div>
+      <p>Compact mode only: one combined review of the spec and the plan. It's accepted only while the Intent is still <code>specified</code> and neither gate has been decided.</p>
+      <div class="codebox"><span class="lbl">Claude Code</span><pre><span class="p">/aisdlc:gate</span> I001 G2-G3 you</pre><button class="copy" type="button">Copy</button></div></div></li>
+
+    <li class="st" data-step="9"><div class="bullet" aria-hidden="true">9</div><div class="card body"><div class="head"><h3>Build the walking skeleton</h3><span class="who claude">CLAUDE</span><span class="who runner">RUNNER</span><span class="sp"></span><label class="chk"><input type="checkbox">done</label></div>
+      <p>For each ready Task, Claude implements inside the declared paths. The runner runs <code>verify-task</code>, capturing commit-pinned evidence for the visible and held-out checks. Then <code>aisdlc-verifier</code> reviews it from a fresh context and the review is registered. Two retries are allowed; a third failure blocks the Task for you to resolve.</p>
+      <div class="codebox"><span class="lbl">Claude Code</span><pre><span class="p">/aisdlc:run</span> I001</pre><button class="copy" type="button">Copy</button></div></div></li>
+
+    <li class="st you" data-step="10"><div class="bullet" aria-hidden="true">10</div><div class="card body"><div class="head"><h3>Accept the walking skeleton</h3><span class="who you">YOU</span><span class="gate">G4</span><span class="sp"></span><label class="chk"><input type="checkbox">done</label></div>
+      <p>Required even when the Intent has only <code>P00</code>: convergence refuses without G4. If there are later phases, run <code>/aisdlc:run I001</code> again after approving to build them.</p>
+      <div class="codebox"><span class="lbl">Claude Code</span><pre><span class="p">/aisdlc:gate</span> I001 G4 you</pre><button class="copy" type="button">Copy</button></div></div></li>
+
+    <li class="st" data-step="11"><div class="bullet" aria-hidden="true">11</div><div class="card body"><div class="head"><h3>Verify</h3><span class="who claude">CLAUDE</span><span class="who runner">RUNNER</span><span class="gate">stops at G5</span><span class="sp"></span><label class="chk"><input type="checkbox">done</label></div>
+      <p>Regenerates traceability and runs convergence: evidence integrity, spec pins, held-out coverage, inherited suites, open findings, and a clean committed tree. Any failure is named with what would satisfy it.</p>
+      <div class="codebox"><span class="lbl">Claude Code</span><pre><span class="p">/aisdlc:verify</span> I001</pre><button class="copy" type="button">Copy</button></div></div></li>
+
+    <li class="st you" data-step="12"><div class="bullet" aria-hidden="true">12</div><div class="card body"><div class="head"><h3>Give final acceptance</h3><span class="who you">YOU</span><span class="gate">G5</span><span class="sp"></span><label class="chk"><input type="checkbox">done</label></div>
+      <p>The precondition for close.</p>
+      <div class="codebox"><span class="lbl">Claude Code</span><pre><span class="p">/aisdlc:gate</span> I001 G5 you</pre><button class="copy" type="button">Copy</button></div></div></li>
+
+    <li class="st" data-step="13"><div class="bullet" aria-hidden="true">13</div><div class="card body"><div class="head"><h3>Close</h3><span class="who claude">CLAUDE</span><span class="who runner">RUNNER</span><span class="sp"></span><label class="chk"><input type="checkbox">done</label></div>
+      <p>Writes the completion result, including what the plan didn't anticipate, and promotes severe findings to lessons that future Intents inherit. Nothing is tagged, published or deployed.</p>
+      <div class="codebox"><span class="lbl">Claude Code</span><pre><span class="p">/aisdlc:close</span> I001</pre><button class="copy" type="button">Copy</button></div></div></li>
+  </ol>
+  <div class="note"><span>🧭</span><span><b>Lost at any point?</b> <code>/aisdlc:status I001</code> shows the Intent's state, its gates, ready Tasks, and the legal next actions.</span></div>
+</section>
+
+<!-- ================= 06 DAILY ================= -->
+<section id="daily">
+  <div class="kicker">06 · Daily workflow</div>
+  <h2>What you actually type on a normal day</h2>
+  <p class="sub">After setup, nearly every session follows the same loop. You don't need to remember the lifecycle: the runner tells you what's next.</p>
+  <div class="card loop">
+    <div class="lp"><span class="k">1 · ASK</span><h3>Where are we?</h3><p><code>/aisdlc:status</code> lists every Intent; <code>/aisdlc:status I001</code> lists its legal next actions.</p></div>
+    <div class="lp"><span class="k">2 · DO</span><h3>Run what it names</h3><p>Usually <code>/aisdlc:specify</code>, <code>/aisdlc:plan</code>, <code>/aisdlc:run</code> or <code>/aisdlc:verify</code>.</p></div>
+    <div class="lp"><span class="k">3 · DECIDE</span><h3>Approve when asked</h3><p>Read the packet (<code>/aisdlc:gate-packet</code>), then <code>/aisdlc:gate I001 Gx you</code>.</p></div>
+    <div class="lp"><span class="k">4 · REPEAT</span><h3>Until close</h3><p>Refused? Read the reason; it names the missing approval or artifact.</p></div>
+  </div>
+  <div class="grid2" style="margin-top:16px">
+    <div class="card files"><h3>Where your records live</h3><p class="muted" style="font-size:14.5px">One folder per Intent, committed with your code. Files marked <b style="color:var(--runner)">runner</b> are written only by the runner. Never edit them.</p>
+<pre>delivery/intents/I001-add-health-endpoint/
+  00-intent/intent.yaml
+  01-brief/brief.md
+  02-specification/requirements.yaml
+  03-planning/plan.md
+  04-build/I001-P00/
+    phase.yaml
+    tasks/I001-P00-T001/
+      task.yaml
+      <b>evidence/</b>          <span class="c"># runner</span>
+      <b>review.yaml</b>        <span class="c"># runner</span>
+  05-verification/
+  06-close/
+  <b>traceability.json</b>    <span class="c"># runner</span></pre></div>
+    <div class="card files"><h3>Habits that keep it smooth</h3>
+      <ul class="ol" style="margin-top:12px">
+        <li><b>Commit before verifying.</b> Evidence is pinned to a commit, and convergence needs a clean tree.</li>
+        <li><b>Never commit <code>.ai-sdlc/runtime/</code>.</b> <code>init</code> gitignores it. Committing it makes convergence impossible.</li>
+        <li><b>Held-out failure? Fix the code.</b> It isn't flaky; it's the most useful signal you'll get.</li>
+        <li><b>State looks wrong? Don't hand-edit JSON.</b> Run <code>ai-sdlc repair-state --confirm</code>.</li>
+        <li><b>Need to work unmanaged for a while?</b> Set <code>AISDLC_HOOKS=off</code> to pause the guards.</li>
+      </ul></div>
+  </div>
+</section>
+
+<!-- ================= 07 PATHS ================= -->
+<section id="paths">
+  <div class="kicker">07 · Onboarding paths</div>
+  <h2>Pick your starting point</h2>
+  <p class="sub">Five entry points, each aiming to reach a working, verified state quickly.</p>
+  <div class="tabs" role="tablist" aria-label="Onboarding paths">
+    <button class="tab" role="tab" id="pt-a" aria-controls="pp-a" aria-selected="true"><span class="k">A</span>New project</button>
+    <button class="tab" role="tab" id="pt-b" aria-controls="pp-b" aria-selected="false" tabindex="-1"><span class="k">B</span>Existing codebase</button>
+    <button class="tab" role="tab" id="pt-c" aria-controls="pp-c" aria-selected="false" tabindex="-1"><span class="k">C</span>New teammate</button>
+    <button class="tab" role="tab" id="pt-d" aria-controls="pp-d" aria-selected="false" tabindex="-1"><span class="k">D</span>Another agent</button>
+    <button class="tab" role="tab" id="pt-e" aria-controls="pp-e" aria-selected="false" tabindex="-1"><span class="k">E</span>Organisation scale</button>
+  </div>
+  <div class="card pathbody" role="tabpanel" id="pp-a" aria-labelledby="pt-a" tabindex="0">
+    <div><span class="time">⏱ quickest path</span><h3>Path A · a brand-new repository</h3><p class="muted">Nothing to discover yet. Scaffold, check, describe your conventions, ship one small change.</p>
+      <ol class="ol"><li>Install, then <code>/aisdlc:init</code> and <code>/aisdlc:doctor</code></li><li>Fill in <code>.ai-sdlc/project-context.md</code></li><li>Run one small <b>compact</b> Intent end to end: the <a href="#quickstart">Quickstart</a></li></ol></div>
+    <div><div class="codebox"><span class="lbl">Claude Code</span><pre><span class="p">/aisdlc:init</span> compact</pre><button class="copy" type="button">Copy</button></div>
+      <div class="codebox" style="margin-top:14px"><span class="lbl">Claude Code</span><pre><span class="p">/aisdlc:start</span> "Add a health endpoint"</pre><button class="copy" type="button">Copy</button></div></div>
+  </div>
+  <div class="card pathbody" role="tabpanel" id="pp-b" aria-labelledby="pt-b" tabindex="0" hidden>
+    <div><span class="time">⏱ about 30 minutes to orient</span><h3>Path B · an existing codebase</h3><p class="muted">"State what it should do, then prove it" turns into fiction on a legacy system. First record what it <em>is</em>, then pin what it <em>does</em>.</p>
+      <ol class="ol"><li><code>/aisdlc:init</code> and <code>/aisdlc:doctor</code></li><li>Build an <b>understanding</b> from <em>one</em> source, code or docs, never both. Every claim carries a <code>[path:lines]</code> anchor</li><li>Validate its anchors and pin it to a commit with <code>understand record</code></li><li>Copy the checks you accept into a probes file yourself. There's no promote command, by design</li><li>Capture a <b>baseline</b>, then write criteria like "no worse than BASELINE-001"</li></ol></div>
+    <div><div class="codebox"><span class="lbl">Claude Code</span><pre><span class="p">/aisdlc:understand</span> repo</pre><button class="copy" type="button">Copy</button></div>
+      <div class="codebox" style="margin-top:14px"><span class="lbl">runner</span><pre><span class="p">ai-sdlc</span> understand record</pre><button class="copy" type="button">Copy</button></div>
+      <div class="codebox" style="margin-top:14px"><span class="lbl">Claude Code</span><pre><span class="p">/aisdlc:baseline</span> probes.yaml</pre><button class="copy" type="button">Copy</button></div>
+      <div class="codebox" style="margin-top:14px"><span class="lbl">runner</span><pre><span class="p">ai-sdlc</span> baseline compare BASELINE-001</pre><button class="copy" type="button">Copy</button></div></div>
+  </div>
+  <div class="card pathbody" role="tabpanel" id="pp-c" aria-labelledby="pt-c" tabindex="0" hidden>
+    <div><span class="time">⏱ about 20 minutes of reading</span><h3>Path C · a new teammate</h3><p class="muted">The repository already uses the lifecycle. Read three files, then shadow one change.</p>
+      <ol class="ol"><li><code>AGENTS.md</code>: short; it lists what the runner will refuse</li><li><code>.ai-sdlc/constitution.md</code>: about one page of non-negotiable rules</li><li>This guide's <a href="#quickstart">Quickstart</a>, then shadow one compact Intent</li><li>On brownfield repos, also <code>.ai-sdlc/project-understanding.md</code></li></ol></div>
+    <div><div class="note bad" style="margin-top:0"><span>🚫</span><span><b>The three classic early mistakes:</b> hand-editing <code>.ai-sdlc/runtime/</code> to "fix" a state; retrying a held-out failure as if it were flaky; committing <code>.ai-sdlc/runtime/</code>.</span></div>
+      <div class="codebox" style="margin-top:14px"><span class="lbl">Claude Code</span><pre><span class="p">/aisdlc:status</span></pre><button class="copy" type="button">Copy</button></div></div>
+  </div>
+  <div class="card pathbody" role="tabpanel" id="pp-d" aria-labelledby="pt-d" tabindex="0" hidden>
+    <div><span class="time">⏱ about 5 minutes</span><h3>Path D · a non-Claude agent</h3><p class="muted">Any agent may drive the lifecycle; none may decide it. The runner is plain Python with no dependencies.</p>
+      <ol class="ol"><li>Find the installed plugin folder once</li><li>Run the runner with any stock Python 3.12+ (<code>python3</code>, <code>python</code> or <code>py</code>)</li><li>Follow <code>AGENTS.md</code> in the repository root</li></ol></div>
+    <div><div class="codebox"><span class="lbl">shell</span><pre>python3 &lt;plugin-dir&gt;/scripts/lifecycle.py --help</pre><button class="copy" type="button">Copy</button></div>
+      <div class="codebox" style="margin-top:14px"><span class="lbl">shell</span><pre>python3 &lt;plugin-dir&gt;/scripts/lifecycle.py status</pre><button class="copy" type="button">Copy</button></div></div>
+  </div>
+  <div class="card pathbody" role="tabpanel" id="pp-e" aria-labelledby="pt-e" tabindex="0" hidden>
+    <div><span class="time">⏱ incremental</span><h3>Path E · organisation scale</h3><p class="muted">Several teams, long initiatives, or compliance requirements.</p>
+      <ol class="ol"><li>Group Intents into a <b>Program</b>, with ordering and a roll-up</li><li>Declare shared resources so contention is visible: <code>intent-resources</code>, <code>coapprove-resource</code></li><li>Pick a stricter <b>pipeline profile</b> where needed: tighten freely, loosen only by recorded waiver</li><li>Export evidence for NIST AI RMF, ISO/IEC 42001 and SSDF</li></ol></div>
+    <div><div class="codebox"><span class="lbl">Claude Code</span><pre><span class="p">/aisdlc:program</span> new --title "Checkout v2" --owner you</pre><button class="copy" type="button">Copy</button></div>
+      <div class="codebox" style="margin-top:14px"><span class="lbl">runner</span><pre><span class="p">ai-sdlc</span> intent-resources I003 --declare schema:orders</pre><button class="copy" type="button">Copy</button></div>
+      <div class="codebox" style="margin-top:14px"><span class="lbl">Claude Code</span><pre><span class="p">/aisdlc:conformance</span> I003</pre><button class="copy" type="button">Copy</button></div></div>
+  </div>
+</section>
+
+<!-- ================= 08 LIFECYCLE ================= -->
+<section id="lifecycle">
+  <div class="kicker">08 · Lifecycle stages</div>
+  <h2>Seven stages, five gates, in detail</h2>
+  <p class="sub">Pick a stage to see what happens, which folder it fills, and what the runner refuses there.</p>
+  <div class="rail" role="tablist" aria-label="Lifecycle stages">
+    <button class="stage" role="tab" id="lt-0" aria-controls="lp-0" aria-selected="true"><span class="n">STAGE 0</span><span class="t">register</span><span class="gate none">no gate</span></button>
+    <button class="stage" role="tab" id="lt-1" aria-controls="lp-1" aria-selected="false" tabindex="-1"><span class="n">STAGE 1</span><span class="t">frame</span><span class="gate">G1</span></button>
+    <button class="stage" role="tab" id="lt-2" aria-controls="lp-2" aria-selected="false" tabindex="-1"><span class="n">STAGE 2</span><span class="t">specify</span><span class="gate">G2</span></button>
+    <button class="stage" role="tab" id="lt-3" aria-controls="lp-3" aria-selected="false" tabindex="-1"><span class="n">STAGE 3</span><span class="t">plan</span><span class="gate">G3</span></button>
+    <button class="stage" role="tab" id="lt-4" aria-controls="lp-4" aria-selected="false" tabindex="-1"><span class="n">STAGE 4</span><span class="t">build</span><span class="gate">G4</span></button>
+    <button class="stage" role="tab" id="lt-5" aria-controls="lp-5" aria-selected="false" tabindex="-1"><span class="n">STAGE 5</span><span class="t">converge</span><span class="gate">G5</span></button>
+    <button class="stage" role="tab" id="lt-6" aria-controls="lp-6" aria-selected="false" tabindex="-1"><span class="n">STAGE 6</span><span class="t">close</span><span class="gate none">no gate</span></button>
+  </div>
+  <div class="card panel" role="tabpanel" id="lp-0" aria-labelledby="lt-0" tabindex="0"><div class="main"><div class="kicker">Stage 0 · register</div><h3>Give the change a permanent identity</h3><p>The runner registers the Intent and allocates <code>I001</code>. Identifiers are never reused or renumbered, even after failure. Registration records the mode (compact or full) and whether discovery is needed.</p><div class="meta"><span class="chip">00-intent/</span><span class="chip">intent.yaml</span><span class="chip">audit event</span></div><div class="codebox"><span class="lbl">Claude Code</span><pre><span class="p">/aisdlc:start</span> "Add a health endpoint"</pre><button class="copy" type="button">Copy</button></div></div><div class="aside"><h4>The runner refuses</h4><ul class="refuse"><li>Choosing or reusing an identifier by hand</li><li>Compact mode for an Intent with model behaviour</li></ul><h4>Next</h4><p class="muted" style="font-size:14.5px">Framing happens in the same <code>/aisdlc:start</code> run.</p></div></div>
+  <div class="card panel" role="tabpanel" id="lp-1" aria-labelledby="lt-1" tabindex="0" hidden><div class="main"><div class="kicker">Stage 1 · frame · gate G1</div><h3>Agree on the outcome</h3><p>Claude drafts a brief: the outcome, who it's for, how you'll know it worked, and trigger flags (<code>retrieval_grounded</code>, <code>contains_model_behavior</code>, <code>multi_tenant</code>, <code>has_side_effect</code>). The flags decide which standing regression suites are inherited.</p><div class="meta"><span class="chip">01-brief/</span><span class="chip">brief.md</span></div><div class="codebox"><span class="lbl">Claude Code</span><pre><span class="p">/aisdlc:gate</span> I001 G1 you</pre><button class="copy" type="button">Copy</button></div></div><div class="aside"><h4>The runner refuses</h4><ul class="refuse"><li>Specifying before G1 is approved</li><li>Claude approving the gate itself</li></ul><h4>G1 authorizes</h4><p class="muted" style="font-size:14.5px">The framed brief and its trigger flags.</p></div></div>
+  <div class="card panel" role="tabpanel" id="lp-2" aria-labelledby="lt-2" tabindex="0" hidden><div class="main"><div class="kicker">Stage 2 · specify · gate G2</div><h3>Make "done" testable</h3><p>Requirements written as single obligations, with acceptance criteria that each carry exactly one class. Contracts go under <code>contracts/</code>. A threat model is added when the flags require it. A red-team pre-gate review checks the spec from a fresh context.</p><div class="meta"><span class="chip">02-specification/</span><span class="chip">requirements.yaml</span><span class="chip">contracts/</span><span class="chip">threat model</span></div><div class="codebox"><span class="lbl">Claude Code</span><pre><span class="p">/aisdlc:specify</span> I001</pre><button class="copy" type="button">Copy</button></div></div><div class="aside"><h4>The runner refuses</h4><ul class="refuse"><li>A criterion with zero or two classes</li><li>Advancing past spec-lint errors (<code>specification.fail_on</code>)</li><li>Editing an approved spec without reopening G2</li></ul><h4>G2 authorizes</h4><p class="muted" style="font-size:14.5px">The specification, which approving <b>freezes</b>. In compact mode it's combined with G3 as <code>G2-G3</code>.</p></div></div>
+  <div class="card panel" role="tabpanel" id="lp-3" aria-labelledby="lt-3" tabindex="0" hidden><div class="main"><div class="kicker">Stage 3 · plan · gate G3</div><h3>Decide the architecture, then the tasks</h3><p>Structural choices are recorded first as decisions. Then the Build Phases are ordered by dependency, with <code>P00</code> as the walking skeleton. Every Task traces to exactly one requirement, finding or decision, and declares its paths, shared resources, criteria and commands.</p><div class="meta"><span class="chip">03-planning/</span><span class="chip">decisions</span><span class="chip">phase.yaml</span><span class="chip">task.yaml</span></div><div class="codebox"><span class="lbl">Claude Code</span><pre><span class="p">/aisdlc:plan</span> I001</pre><button class="copy" type="button">Copy</button></div></div><div class="aside"><h4>The runner refuses</h4><ul class="refuse"><li>G3 without a pre-gate review of the plan</li><li>A Task that traces to nothing</li><li>Running any Task before G3</li></ul><h4>G3 authorizes</h4><p class="muted" style="font-size:14.5px">The plan, and with it the execution of any Task.</p></div></div>
+  <div class="card panel" role="tabpanel" id="lp-4" aria-labelledby="lt-4" tabindex="0" hidden><div class="main"><div class="kicker">Stage 4 · build · gate G4</div><h3>Implement under locks, prove with evidence</h3><p>The runner picks the dependency- and lock-safe ready batch. Each Task is implemented inside its declared paths, verified by the runner, and reviewed by a verifier from a different model family. G4 accepts the <code>P00</code> walking skeleton and releases the later phases.</p><div class="meta"><span class="chip">04-build/</span><span class="chip">evidence manifests</span><span class="chip">review.yaml</span><span class="chip">worktrees</span></div><div class="codebox"><span class="lbl">Claude Code</span><pre><span class="p">/aisdlc:run</span> I001</pre><button class="copy" type="button">Copy</button></div></div><div class="aside"><h4>The runner refuses</h4><ul class="refuse"><li>Marking a Task complete without captured evidence</li><li>A review from the implementer's model family</li><li>Phases after P00 before G4</li><li>A fourth attempt after two retries</li></ul><h4>G4 authorizes</h4><p class="muted" style="font-size:14.5px">Release of the phases after <code>P00</code>. Convergence also requires it.</p></div></div>
+  <div class="card panel" role="tabpanel" id="lp-5" aria-labelledby="lt-5" tabindex="0" hidden><div class="main"><div class="kicker">Stage 5 · converge · gate G5</div><h3>Check everything together</h3><p>Evidence integrity and commit pins, spec conformance (visible vs held-out), held-out coverage, bidirectional traceability, inherited suites, open findings, and phase exits, all on a clean committed tree.</p><div class="meta"><span class="chip">05-verification/</span><span class="chip">traceability.json</span><span class="chip">convergence report</span></div><div class="codebox"><span class="lbl">Claude Code</span><pre><span class="p">/aisdlc:verify</span> I001</pre><button class="copy" type="button">Copy</button></div></div><div class="aside"><h4>The runner refuses</h4><ul class="refuse"><li>Converging with an unresolved conformance gap</li><li>Uncommitted source changes</li><li>Converging without G4</li></ul><h4>G5 authorizes</h4><p class="muted" style="font-size:14.5px">Final acceptance, the precondition for close.</p></div></div>
+  <div class="card panel" role="tabpanel" id="lp-6" aria-labelledby="lt-6" tabindex="0" hidden><div class="main"><div class="kicker">Stage 6 · close</div><h3>Record the result, keep the lessons</h3><p>The completion result notes what the plan didn't anticipate. Severe findings become <b>lessons</b> with a firing target: a regression eval (strongest), a policy, a checklist item, or a context heuristic (weakest).</p><div class="meta"><span class="chip">06-close/</span><span class="chip">result.md</span><span class="chip">lessons</span></div><div class="codebox"><span class="lbl">Claude Code</span><pre><span class="p">/aisdlc:close</span> I001</pre><button class="copy" type="button">Copy</button></div></div><div class="aside"><h4>The runner refuses</h4><ul class="refuse"><li>Closing before G5</li><li>A Critical or High finding without a blocking target</li></ul><h4>Out of scope</h4><p class="muted" style="font-size:14.5px">Release and deployment. Nothing is tagged, published or deployed.</p></div></div>
+</section>
+
+<!-- ================= 09 VERIFY ================= -->
+<section id="verify">
+  <div class="kicker">09 · Verification</div>
+  <h2>How a Task proves it is done</h2>
+  <p class="sub">Every acceptance criterion has exactly one class. Prefer <b>D</b>: reach for S, J or N only when a command genuinely can't settle the question, because each one carries a dataset, a pin and a recurring cost.</p>
+  <div class="grid4">
+    <div class="card cls" style="--k:#0b6e66"><div class="L">D</div><h3>Deterministic</h3><p>A command exits zero or non-zero. Tests, linters, type checks, migrations.</p><div class="ex">pytest -q tests/test_health.py</div></div>
+    <div class="card cls" style="--k:#3451d1"><div class="L">S</div><h3>Statistical</h3><p>A rate over a versioned dataset, with threshold and tolerance declared <em>before</em> any run. At least 3 runs.</p><div class="ex">e.g. pass rate ≥ your threshold</div></div>
+    <div class="card cls" style="--k:#6d33d6"><div class="L">J</div><h3>Judged</h3><p>A pinned judge with a binary rubric and exemplars, from a different family than the generator. Agreement floor 0.85.</p><div class="ex">2+ exemplars · 5% human audit</div></div>
+    <div class="card cls" style="--k:#b93d0a"><div class="L">N</div><h3>Adversarial</h3><p>An attack suite where the only passing result is zero successes: injection, jailbreaks, tenant isolation.</p><div class="ex">aisdlc-red-team</div></div>
+  </div>
+  <div class="chain">
+    <div class="card link"><span class="i">01 · DECLARE</span><h3>task.yaml</h3><p>Paths, resources, criteria, visible and held-out commands.</p></div>
+    <div class="card link"><span class="i">02 · CAPTURE</span><h3>verify-task</h3><p>Runs both suites against one commit; masks secrets, then hashes.</p></div>
+    <div class="card link"><span class="i">03 · PIN</span><h3>manifest</h3><p>Commands, exit codes, SHA-256, sandbox posture, Git commit.</p></div>
+    <div class="card link"><span class="i">04 · REVIEW</span><h3>review-task</h3><p>Fresh context, different model family, checked against the manifest.</p></div>
+    <div class="card link"><span class="i">05 · MERGE</span><h3>merge-ready</h3><p>Same commit, not stale, no conflict markers.</p></div>
+  </div>
+  <div class="callout"><b>Visible checks pass, held-out checks fail?</b> That's a <em>specification-conformance gap</em>: the code satisfies the tests it was given, not the requirement. <b>Fix the implementation. Never the held-out test.</b> It isn't a flaky test, so don't retry it as one.</div>
+  <div class="note" style="margin-top:14px"><span>🧪</span><span><b>Reviewer independence in practice.</b> The bundled <code>aisdlc-verifier</code> agent runs on Opus. If your implementing session also runs on an Opus model, both reduce to <code>claude-opus</code>, so the runner rejects the review. Set <code>review.reviewer_model</code> in <code>.ai-sdlc/config.yaml</code> to a model from another family. A review with no <code>reviewer_model</code> at all is also rejected: the runner fails closed.</span></div>
+</section>
+
+<!-- ================= 10 TASK STATES ================= -->
+<section id="tasks">
+  <div class="kicker">10 · Task states</div>
+  <h2>No state is reached by editing a file</h2>
+  <p class="sub">The runner moves every Task through these states. Click a state, or tab to it and press Enter, to highlight where it can go next.</p>
+  <div class="sm">
+    <div class="card smsvg"><svg id="smsvg" viewBox="0 0 760 330" role="group" aria-label="Task state machine. Use Tab to move between states and Enter to select one."></svg>
+      <div class="legend"><span><i></i>state</span><span><i class="d"></i>terminal state</span><span><i style="background:var(--accent);border-color:var(--accent)"></i>selected</span><span><i style="background:var(--accent-soft);border-color:var(--accent)"></i>can go next</span></div></div>
+    <div class="card smside" id="smside" aria-live="polite"></div>
+  </div>
+  <details class="more"><summary>Show every transition as a table</summary>
+    <div class="card" style="padding:8px 14px;margin-top:10px"><table class="trtable"><thead><tr><th>From</th><th>Can move to</th><th>Meaning</th></tr></thead><tbody id="trbody"></tbody></table></div>
+  </details>
+</section>
+
+<!-- ================= 11 COMMANDS ================= -->
+<section id="commands">
+  <div class="kicker">11 · Commands</div>
+  <h2>Command reference</h2>
+  <p class="sub">The fifteen <code>/aisdlc:*</code> slash commands you type in Claude Code, and the runner commands they call. Arguments in <code>[brackets]</code> are optional.</p>
+  <label class="card search"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span class="sr">Filter commands</span><input id="q" type="search" placeholder="Filter: gate, evidence, baseline, retry…" autocomplete="off"></label>
+  <div class="filters" role="group" aria-label="Command groups" id="filters"></div>
+  <div class="cmds" id="cmds"></div>
+  <p class="empty" id="empty" hidden>No command matches that filter.</p>
+</section>
+
+<!-- ================= 12 HELP ================= -->
+<section id="help">
+  <div class="kicker">12 · Troubleshooting</div>
+  <h2>When the runner says no</h2>
+  <p class="sub">A refusal is the design working: it names what's missing. Start with <code>/aisdlc:status I001</code>, then find the message below.</p>
+  <div class="help2">
+    <div class="faq" id="faq">
+      <details><summary><code>Gate 3 must be approved before executing Tasks</code></summary><div class="bd">The plan isn't approved yet. Review it and run <code>/aisdlc:gate I001 G3 you</code>, or <code>G2-G3</code> in compact mode.</div></details>
+      <details><summary><code>Gate 4 must approve the walking skeleton</code></summary><div class="bd">Phases after <code>P00</code> wait for G4. Review the P00 results and run <code>/aisdlc:gate I001 G4 you</code>, then <code>/aisdlc:run I001</code> again.</div></details>
+      <details><summary><code>Gate 4 is not approved</code> (at verify)</summary><div class="bd">Convergence needs G4 even when the Intent has only <code>P00</code>. Approve G4, then rerun <code>/aisdlc:verify I001</code>.</div></details>
+      <details><summary><code>illegal transition</code> / gate requires another state</summary><div class="bd">Something was attempted out of order. For example, <code>G2-G3</code> is only accepted while the Intent is <code>specified</code> and neither gate is decided. <code>/aisdlc:status</code> shows the current state and the legal next actions.</div></details>
+      <details><summary>Pre-gate review missing</summary><div class="bd">G3 needs a fresh-context red-team review of the plan, registered with <code>ai-sdlc pre-gate-review I001 G3 --from &lt;file&gt;</code>. <code>/aisdlc:plan</code> asks for it. Rerun that step if it was skipped.</div></details>
+      <details><summary><code>may not approve</code></summary><div class="bd">The approver isn't in that gate's list. Route it to a declared approver, or amend <code>gates.approvers</code> in <code>.ai-sdlc/config.yaml</code>.</div></details>
+      <details><summary>Specification-conformance gap</summary><div class="bd">The visible suite passes; the held-out suite fails. <b>Fix the implementation, never the held-out test.</b> It's the most informative signal the framework produces.</div></details>
+      <details><summary><code>declares no held-out instrument</code></summary><div class="bd">A behavioural Task has no independent check. Add <code>holdout_commands</code>, or record a <code>holdout_waiver</code> with a reason and an approver.</div></details>
+      <details><summary><code>reviewer_model</code> missing or same family</summary><div class="bd">Independence can't be established. Use a reviewer from another family (Opus vs Sonnet counts) and set <code>review.reviewer_model</code>.</div></details>
+      <details><summary>Task is <code>blocked</code></summary><div class="bd">The retry limit was exceeded and an escalation package was written. Resolve it, then continue the Task's worktree with <code>ai-sdlc worktree resume</code>, or abandon the Task with <code>ai-sdlc fail-task &lt;task&gt; --reason "…"</code>.</div></details>
+      <details><summary><code>tracked source changes are not committed</code></summary><div class="bd">Convergence needs a clean tree. Commit your intended changes, recapture evidence if the commit moved, then verify again.</div></details>
+      <details><summary><code>commits behind</code> / pin mismatch</summary><div class="bd">The verified base is stale, or a mapped requirement changed. Rebase and re-verify against the approved revision.</div></details>
+      <details><summary>Runner state looks corrupt</summary><div class="bd">Don't edit JSON. Run <code>ai-sdlc repair-state --confirm</code>. It validates the audit sequence, keeps the unreadable file as <code>state.corrupt-*.json</code>, and rebuilds.</div></details>
+      <details><summary>Guards inactive / <code>no python3 &gt;= 3.12</code></summary><div class="bd">The hooks need a POSIX shell and Python 3.12+ on <code>PATH</code>. On Windows, both usually come with Git for Windows and a normal Python install. Re-run <code>/aisdlc:doctor</code>.</div></details>
+    </div>
+    <div>
+      <h3 style="margin-bottom:10px">Know before you rely on it</h3>
+      <div class="note bad" style="margin-top:0"><span>⚙️</span><span><b>Verification runs code.</b> <code>/aisdlc:run</code> and <code>/aisdlc:verify</code> execute the repository's declared commands. Treat them like <code>npm test</code> on untrusted code.</span></div>
+      <div class="note warn"><span>🛡️</span><span><b>Guards fail open.</b> Without a POSIX shell or Python 3.12+, the hooks warn on stderr and allow the action. Read a <code>runner: fail</code> line from <code>doctor</code> as "guards are off".</span></div>
+      <div class="note warn"><span>⌨️</span><span><b>Shell writes aren't guarded.</b> The guard watches Claude's file-editing tools. A Bash command that writes <code>.ai-sdlc/runtime/</code> isn't intercepted, so review such commands yourself.</span></div>
+      <div class="note"><span>🔏</span><span><b>Evidence is hashed, not signed.</b> It stops agents from grading their own work. It doesn't prove anything to a third party who doesn't trust your machine.</span></div>
+      <p class="muted" style="font-size:14px;margin-top:14px">More: <a href="../SECURITY.md">SECURITY.md</a> · <a href="../CHANGELOG.md">CHANGELOG.md</a> · <a href="reference.md">full reference</a>. Markdown links open as plain text from a local file; they render best on GitHub.</p>
+    </div>
+  </div>
+</section>
+
+<footer><span>AI SDLC v0.2.0 · Apache-2.0 · Release and deployment stay outside this lifecycle.</span><span><a href="../README.md">README</a> · <a href="reference.md">Reference</a> · <a href="../CONTRIBUTING.md">Contributing</a></span></footer>
+</div>
+</main>
+</div>
+
+<script>
+(() => {
+  "use strict";
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+  const store = {
+    get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+    set(k, v) { try { localStorage.setItem(k, v); } catch { /* storage unavailable */ } },
+  };
+
+  /* theme */
+  const root = document.documentElement, themeBtn = $("#theme");
+  const isDark = () => root.dataset.theme ? root.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  const syncTheme = () => themeBtn.setAttribute("aria-pressed", String(isDark()));
+  themeBtn.addEventListener("click", () => { root.dataset.theme = isDark() ? "light" : "dark"; store.set("aisdlc-guide-theme", root.dataset.theme); syncTheme(); });
+  syncTheme();
+
+  /* copy: clipboard API, falling back to selecting the text so Ctrl+C works on file:// */
+  document.addEventListener("click", async (e) => {
+    const b = e.target.closest(".copy"); if (!b) return;
+    const pre = b.parentElement.querySelector("pre"); const text = pre.textContent.replace(/\s+#.*$/gm, "").trim();
+    try { await navigator.clipboard.writeText(text); b.textContent = "Copied ✓"; }
+    catch { const r = document.createRange(); r.selectNodeContents(pre); const s = getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = "Press Ctrl+C"; }
+    setTimeout(() => (b.textContent = "Copy"), 1600);
+  });
+
+  /* accessible tabs: the content is already in the HTML; this only toggles `hidden` */
+  const tabs = (list) => {
+    const items = $$('[role="tab"]', list);
+    const select = (tab, focus) => {
+      items.forEach((t) => { const on = t === tab; t.setAttribute("aria-selected", on); t.tabIndex = on ? 0 : -1; $("#" + t.getAttribute("aria-controls")).hidden = !on; });
+      if (focus) tab.focus();
+    };
+    list.addEventListener("click", (e) => { const t = e.target.closest('[role="tab"]'); if (t) select(t); });
+    list.addEventListener("keydown", (e) => {
+      const i = items.indexOf(document.activeElement); if (i < 0) return;
+      const map = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: items.length - 1 };
+      if (!(e.key in map)) return; e.preventDefault();
+      select(items[(map[e.key] + items.length) % items.length], true);
+    });
+  };
+  $$('[role="tablist"]').forEach(tabs);
+
+  /* quickstart: mode switch + progress saved per step */
+  const tl = $("#tl"), saved = JSON.parse(store.get("aisdlc-guide-done") || "{}");
+  const visibleSteps = () => $$(".st", tl).filter((s) => getComputedStyle(s).display !== "none");
+  const progress = () => {
+    const vis = visibleSteps(), done = vis.filter((s) => $("input", s).checked).length;
+    $("#qsBar").style.width = `${(done / vis.length) * 100}%`; $("#qsCount").textContent = `${done} of ${vis.length} done`;
+  };
+  $$(".st", tl).forEach((s) => {
+    const key = s.dataset.step + (s.dataset.mode || ""), box = $("input", s);
+    box.checked = !!saved[key]; s.classList.toggle("done", box.checked);
+    box.addEventListener("change", () => { saved[key] = box.checked; s.classList.toggle("done", box.checked); store.set("aisdlc-guide-done", JSON.stringify(saved)); progress(); });
+    $(".bullet", s).addEventListener("click", () => { box.checked = !box.checked; box.dispatchEvent(new Event("change")); });
+  });
+  const setMode = (m) => {
+    tl.classList.toggle("compact", m === "compact");
+    $$(".mode button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.mode === m)));
+    store.set("aisdlc-guide-mode", m); progress();
+  };
+  $$(".mode button").forEach((b) => b.addEventListener("click", () => setMode(b.dataset.mode)));
+  setMode(store.get("aisdlc-guide-mode") === "compact" ? "compact" : "full");
+
+  /* task state machine: transitions mirror TASK_TRANSITIONS in scripts/aisdlc/state.py */
+  const T = { pending: ["ready", "superseded"], ready: ["in_progress", "superseded"], in_progress: ["verifying", "blocked"],
+    verifying: ["review", "retry"], review: ["verified", "retry"], retry: ["in_progress", "blocked"], blocked: ["in_progress", "failed"],
+    verified: ["merged"], merged: ["reverted"], reverted: [], superseded: [], failed: [] };
+  const P = { pending: [70, 60], ready: [200, 60], in_progress: [340, 60], verifying: [480, 60], review: [620, 60],
+    verified: [620, 170], merged: [620, 275], reverted: [460, 275], retry: [410, 170], blocked: [250, 170], failed: [100, 275], superseded: [220, 275] };
+  const D = { pending: "Planned, waiting on dependencies or locks.", ready: "Selected by <code>ready-tasks</code>: dependencies met, no lock conflict.",
+    in_progress: "Claimed with <code>start-task</code>; being implemented inside its declared paths.", verifying: "<code>verify-task</code> is running the visible and held-out suites against one commit.",
+    review: "Evidence captured; waiting for a fresh-context reviewer from a different model family.", retry: "Verification or review failed. Two retries are allowed.",
+    blocked: "Retry limit exceeded. A human resolves the escalation, then resumes it or fails it.", verified: "Reviewed against its own manifest; can merge once <code>merge-ready</code> passes.",
+    merged: "Integrated. Only <code>revert-task</code> undoes it, and the original record is kept.", reverted: "Rolled back by <code>revert-task</code>. Terminal; a corrective Task follows.",
+    superseded: "Replaced before execution by <code>supersede-task</code>. Terminal; the ID is never reused.", failed: "Abandoned by <code>fail-task</code> after a human decision. Terminal; attempts stay in the audit trail." };
+  const svg = $("#smsvg"), ns = "http://www.w3.org/2000/svg", W = 108, H = 36;
+  const el = (n, a) => { const x = document.createElementNS(ns, n); for (const k in a) x.setAttribute(k, a[k]); return x; };
+  const defs = el("defs", {});
+  for (const [id, col] of [["ah", "var(--line-2)"], ["ahon", "var(--accent)"]]) {
+    const mk = el("marker", { id, viewBox: "0 0 10 10", refX: 9, refY: 5, markerWidth: 7, markerHeight: 7, orient: "auto-start-reverse" });
+    mk.appendChild(el("path", { d: "M0 0L10 5L0 10z", style: `fill:${col}` })); defs.appendChild(mk);
+  }
+  svg.appendChild(defs);
+  const edges = [];
+  for (const [a, outs] of Object.entries(T)) for (const b of outs) {
+    const [x1, y1] = P[a], [x2, y2] = P[b], dx = x2 - x1, dy = y2 - y1, len = Math.hypot(dx, dy);
+    const s = 1 / Math.max(Math.abs(dx) / (W / 2 + 6), Math.abs(dy) / (H / 2 + 6), 1e-6);
+    const off = T[b].includes(a) ? 8 : 0, nx = (-dy / len) * off, ny = (dx / len) * off;
+    const p = el("path", { class: "edge", d: `M${x1 + dx * s + nx} ${y1 + dy * s + ny} L${x2 - dx * s + nx} ${y2 - dy * s + ny}`, "marker-end": "url(#ah)" });
+    p.dataset.a = a; svg.appendChild(p); edges.push(p);
+  }
+  const nodes = {};
+  for (const [s, [x, y]] of Object.entries(P)) {
+    const g = el("g", { class: "node" + (T[s].length ? "" : " term"), tabindex: 0, role: "button", "aria-pressed": "false", "aria-label": `${s}${T[s].length ? "" : ", terminal"}` });
+    g.appendChild(el("rect", { x: x - W / 2, y: y - H / 2, width: W, height: H, rx: 9 }));
+    const t = el("text", { x, y: y + 4.5, "text-anchor": "middle" }); t.textContent = s; g.appendChild(t);
+    g.addEventListener("click", () => pick(s));
+    g.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); pick(s); } });
+    svg.appendChild(g); nodes[s] = g;
+  }
+  const pick = (s) => {
+    for (const [k, g] of Object.entries(nodes)) {
+      g.setAttribute("class", "node" + (T[k].length ? "" : " term") + (k === s ? " on" : T[s].includes(k) ? " next" : ""));
+      g.setAttribute("aria-pressed", String(k === s));
+    }
+    edges.forEach((p) => { const on = p.dataset.a === s; p.classList.toggle("on", on); p.setAttribute("marker-end", on ? "url(#ahon)" : "url(#ah)"); });
+    $("#smside").innerHTML = `<div class="kicker">Selected state</div><p class="stn">${esc(s)}</p><p style="color:var(--ink-2)">${D[s]}</p>
+      <h4 style="margin:12px 0 8px;font:700 12px var(--sans);text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3)">Can move to</h4>
+      ${T[s].length ? T[s].map((o) => `<button class="tab" type="button" data-go="${o}" style="margin:0 6px 6px 0">${esc(o)} →</button>`).join("") : '<span class="chip">terminal: no way out</span>'}`;
+  };
+  $("#smside").addEventListener("click", (e) => { const b = e.target.closest("[data-go]"); if (b) { pick(b.dataset.go); nodes[b.dataset.go].focus(); } });
+  $("#trbody").innerHTML = Object.entries(T).map(([s, o]) => `<tr><td>${s}</td><td>${o.length ? o.join(", ") : "<span class=muted>terminal</span>"}</td><td>${D[s]}</td></tr>`).join("");
+  pick("in_progress");
+
+  /* commands */
+  const C = [
+    ["/aisdlc:init", "[compact|full]", "Scaffold the framework into this repository and report what was written.", "setup"],
+    ["/aisdlc:doctor", "", "Check whether this repository can run the lifecycle: 16 readiness checks.", "setup"],
+    ["/aisdlc:understand", "repo | document <doc.md> [<doc.md> …]", "Build an anchored structural understanding from code or from documents.", "brownfield"],
+    ["/aisdlc:baseline", "<probes-file> [--label <text>]", "Pin an existing repository's current behaviour before the first Intent.", "brownfield"],
+    ["/aisdlc:start", "<title>", "Register a new Intent, agree its mode, frame its brief, and stop at Gate 1.", "lifecycle"],
+    ["/aisdlc:specify", "<intent-id>", "Write testable requirements and criteria, get a red-team review, stop at Gate 2.", "lifecycle"],
+    ["/aisdlc:plan", "<intent-id>", "Record decisions, break the work into Phases and Tasks, stop at Gate 3.", "lifecycle"],
+    ["/aisdlc:run", "<intent-id | task-id>", "Execute approved, ready Tasks: implement, verify, and get an independent review.", "lifecycle"],
+    ["/aisdlc:verify", "<intent-id>", "Validate evidence, pins, traceability and convergence; stop at Gate 5.", "lifecycle"],
+    ["/aisdlc:close", "<intent-id>", "Record the result and promote lessons, after Gate 5 only.", "lifecycle"],
+    ["/aisdlc:gate", "<intent-id> [G1|G2|G2-G3|G3|G4|G5] [approver]", "Record a human gate decision, or show which gate is waiting. The approver is positional.", "gates"],
+    ["/aisdlc:gate-packet", "<intent-id> <G1|G2|G3|G4|G5>", "Assemble a short decision packet for one gate.", "gates"],
+    ["/aisdlc:status", "[intent-id]", "Lifecycle state, gates, ready Tasks, and the legal next actions.", "everyday"],
+    ["/aisdlc:program", "<program-id> | new --title \"<text>\" --owner <name>", "Group Intents into one initiative with ordering and a roll-up.", "scale"],
+    ["/aisdlc:conformance", "<intent-id | program-id>", "Export records as NIST AI RMF, ISO/IEC 42001 and SSDF evidence.", "scale"],
+    ["ai-sdlc advance", "<intent> framed|specified|planned|building", "Move an Intent to the next stage, once that stage's gate allows it.", "runner"],
+    ["ai-sdlc gate approve", "<intent> <gate> --approver <name>", "Record a gate approval (what /aisdlc:gate calls).", "runner"],
+    ["ai-sdlc pre-gate-review", "<intent> G2|G3 --from <file>", "Register a fresh-context adversarial review of the spec or plan.", "runner"],
+    ["ai-sdlc ready-tasks", "<intent>", "Select the next dependency- and lock-safe batch.", "runner"],
+    ["ai-sdlc start-task", "<task>", "Claim a ready Task (moves it to in_progress).", "runner"],
+    ["ai-sdlc verify-task", "<task>", "Run visible and held-out suites in one attempt and write the manifest.", "runner"],
+    ["ai-sdlc review-task", "<task> --review <file> --evidence <manifest> --implementer <id>", "Register an independent review; rejects a same-family reviewer.", "runner"],
+    ["ai-sdlc merge-ready", "<task> --expected-commit <sha>", "Check that a verified Task may merge.", "runner"],
+    ["ai-sdlc merge", "<task> --expected-commit <sha>", "Record integration of a verified Task.", "runner"],
+    ["ai-sdlc retry-task", "<task> --reason \"…\"", "Record a failure and apply the retry limit.", "runner"],
+    ["ai-sdlc fail-task", "<task> --reason \"…\"", "Abandon a blocked Task after a human decision.", "runner"],
+    ["ai-sdlc supersede-task", "<task> --reason \"…\" --replaced-by <task>", "Replace a planned Task before execution; IDs are never reused.", "runner"],
+    ["ai-sdlc revert-task", "<task> --reason \"…\" --corrective <task>", "Roll back a merged Task; the original record is kept.", "runner"],
+    ["ai-sdlc trace", "<intent>", "Regenerate bidirectional traceability.", "runner"],
+    ["ai-sdlc converge", "<intent>", "Run the convergence checks (what /aisdlc:verify calls).", "runner"],
+    ["ai-sdlc spec-lint", "<intent>", "Report requirement-quality findings for a specification.", "runner"],
+    ["ai-sdlc repair-state", "--confirm", "Rebuild corrupt runtime state from the audit log.", "runner"],
+    ["ai-sdlc migrate", "--apply", "Move records to the current schema generation.", "runner"],
+    ["ai-sdlc pipeline", "", "Show the constitution, profiles and their waivers.", "runner"],
+    ["ai-sdlc metrics", "cost | export", "Verification tax, gate latency and DORA-proxy metrics.", "runner"],
+  ];
+  const groups = ["all", "everyday", "setup", "lifecycle", "gates", "brownfield", "scale", "runner"];
+  let group = "all";
+  $("#cmds").innerHTML = C.map(([n, a, d, g]) => `<article class="card cmd" data-g="${g}" data-s="${esc((n + " " + a + " " + d + " " + g).toLowerCase())}"><span class="nm">${esc(n)}</span><span class="grp">${g}</span>${a ? `<span class="ar">${esc(a)}</span>` : ""}<span class="ds">${esc(d)}</span></article>`).join("");
+  $("#filters").innerHTML = groups.map((g) => `<button type="button" data-g="${g}" aria-pressed="${g === "all"}">${g}</button>`).join("");
+  const filter = () => {
+    const q = $("#q").value.trim().toLowerCase(); let shown = 0;
+    $$(".cmd").forEach((c) => { const on = (group === "all" || c.dataset.g === group) && (!q || c.dataset.s.includes(q)); c.hidden = !on; shown += on; });
+    $("#empty").hidden = shown > 0;
+  };
+  $("#q").addEventListener("input", filter);
+  $("#filters").addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return; group = b.dataset.g; $$("#filters button").forEach((x) => x.setAttribute("aria-pressed", String(x === b))); filter(); });
+
+  /* sidebar scroll-spy */
+  const links = $$(".toc a");
+  const io = new IntersectionObserver((es) => es.forEach((en) => { if (en.isIntersecting) links.forEach((l) => l.classList.toggle("on", l.getAttribute("href") === "#" + en.target.id)); }), { rootMargin: "-30% 0px -65% 0px" });
+  $$("section[id]").forEach((s) => io.observe(s));
+})();
+</script>
+</body>
+</html>

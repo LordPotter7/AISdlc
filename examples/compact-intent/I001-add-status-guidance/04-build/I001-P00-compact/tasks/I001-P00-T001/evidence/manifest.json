@@ -1,0 +1,18 @@
+{
+  "task_id": "I001-P00-T001",
+  "criterion_id": "AC-001",
+  "verification_class": "D",
+  "authority": "provisional",
+  "valid_evidence": false,
+  "command": "python tools/validate_p00.py",
+  "exit_code": 0,
+  "stdout": "P00 validation passed",
+  "stderr": "",
+  "source_revision": "uncommitted-p00-walking-skeleton",
+  "captured_by": "manual-p00-exercise",
+  "invalid_reasons": [
+    "P01 runner-owned command capture and hashing are not implemented",
+    "P03 authoritative CI identity is not implemented",
+    "source_revision is not a Git commit"
+  ]
+}

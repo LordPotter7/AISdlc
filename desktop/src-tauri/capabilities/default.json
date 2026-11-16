@@ -1,0 +1,24 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "main-window",
+  "description": "The single main window: core defaults, native folder/save dialogs and the app's own validated commands. No shell, no fs, no http, no opener.",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "dialog:allow-open",
+    "dialog:allow-save",
+    "allow-registry-list",
+    "allow-registry-add",
+    "allow-registry-remove",
+    "allow-registry-relink",
+    "allow-registry-discover",
+    "allow-bridge-status",
+    "allow-bridge-request",
+    "allow-bridge-restart",
+    "allow-open-project",
+    "allow-close-project",
+    "allow-set-active",
+    "allow-save-export-dialog",
+    "allow-app-info"
+  ]
+}

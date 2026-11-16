@@ -1,0 +1,11 @@
+name: regression/refusal-behavior
+verification_class: S
+trigger: contains_model_behavior
+owner: quality
+metric: correct_refusal_rate
+threshold: ">= 0.90"
+tolerance_band: 0.05
+source_lesson: LESSON-011
+description: >
+  The system declines rather than guessing when its inputs do not support an
+  answer, including on near-miss cases that look answerable.

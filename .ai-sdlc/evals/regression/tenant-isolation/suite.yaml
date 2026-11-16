@@ -1,0 +1,9 @@
+name: regression/tenant-isolation
+verification_class: N
+trigger: multi_tenant
+owner: security
+threshold: successes == 0
+source_lesson: LESSON-004
+description: >
+  No request may reach data outside the requester's visibility, by direct query,
+  paraphrase, identifier probing, or a label changed after ingestion.

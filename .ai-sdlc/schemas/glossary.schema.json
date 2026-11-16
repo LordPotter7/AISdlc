@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aisdlc.dev/schemas/glossary.schema.json",
+  "title": "AI SDLC Repository Glossary",
+  "description": "Wave S3.2: one definition and one accountable owner per domain term, shared by every Intent.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["terms"],
+  "properties": {
+    "schema_version": {"type": "integer", "minimum": 0},
+    "version": {"type": "integer", "minimum": 1},
+    "terms": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false, "required": ["term", "definition", "owner"],
+        "properties": {
+          "term": {"type": "string", "minLength": 1},
+          "definition": {"type": "string", "minLength": 1},
+          "owner": {"type": "string", "minLength": 1, "description": "The person or team accountable for the definition."},
+          "aliases": {"type": "array", "items": {"type": "string", "minLength": 1}},
+          "source_intent": {"type": "string", "pattern": "^I[0-9]{3,}$"},
+          "promoted_at": {"type": "string", "format": "date-time"}
+        }
+      }
+    }
+  }
+}

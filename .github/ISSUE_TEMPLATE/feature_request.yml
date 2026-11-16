@@ -1,0 +1,21 @@
+name: Feature request
+description: Propose a change to the lifecycle, the runner, or Studio
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+      description: Say whether it changes who decides what (runner vs. model vs. human). Those changes need an ADR.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered

@@ -1,0 +1,56 @@
+version: 1
+runner_version: 0.2.0
+delivery_root: delivery/intents
+retry_limit: 2
+evidence:
+  retain_failed_attempts: true
+  max_payload_bytes: 1048576
+  redact_secrets: true
+  redact_builtins: true
+  redact: []
+  max_redaction_ratio: 0.5
+review:
+  reviewer_model: null
+  forbid_same_family: true
+  require_reviewer_model: true
+  require_pre_gate_review: true
+evaluations:
+  runs: 3
+  judge_minimum_agreement: 0.85
+  judge_require_dual_order: true
+  judge_require_binary_rubric: true
+  judge_minimum_exemplars: 2
+  judge_require_reasoning: true
+  judge_human_review_fraction: 0.05
+  judge_forbid_generator_family: true
+  sequential_stopping: false
+  max_runs: 5
+verification:
+  require_holdout: true
+  allow_holdout_waiver: true
+  conformance_gap_severity: high
+  mutation_default_threshold: null
+orchestration:
+  max_parallel_tasks: 4
+  retry_limit: 2
+  retain_worktrees: true
+gates:
+  approvers: {}
+  require_declared_approver: false
+merge:
+  max_base_lag: 50
+  integration_ref: HEAD
+scale:
+  programs_enabled: true
+cost:
+  enabled: true
+  currency: usd
+  verification_tax_warning_ratio: 1.0
+security:
+  require_declared_posture: false
+  default_network_policy: deny
+  default_filesystem_scope: worktree
+  default_credential_surface: none
+specification:
+  fail_on: error
+default_artifact_mode: compact

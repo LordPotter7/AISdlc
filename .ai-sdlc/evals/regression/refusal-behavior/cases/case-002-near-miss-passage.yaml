@@ -1,0 +1,3 @@
+id: case-002-near-miss-passage
+question_class: A near-miss passage exists that resembles an answer without supporting one.
+expected: The system declines rather than composing from the near miss.

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Build Phase",
+  "description": "delivery/intents/<Ixxx>-<slug>/04-build/<Ixxx-Pnn>/phase.yaml. P00 is the walking skeleton.",
+  "type": "object",
+  "required": ["id", "title"],
+  "properties": {
+    "schema_version": {"type": "integer", "minimum": 0, "description": "Record schema generation. Absent means 0: a record written before schema versioning existed."},
+    "id": {"type": "string", "pattern": "^I[0-9]{3,}-P[0-9]{2,}(-[a-z0-9-]+)?$"},
+    "intent_id": {"type": "string", "pattern": "^I[0-9]{3,}$"},
+    "title": {"type": "string", "minLength": 1},
+    "status": {"type": "string"},
+    "objective": {"type": "string"},
+    "requirements": {"type": "array", "items": {"type": "string"}},
+    "depends_on": {"type": "array", "items": {"type": "string"}},
+    "entry_criteria": {"type": "array", "items": {"type": "string"}},
+    "tasks": {"type": "array", "items": {"type": "string"}},
+    "exit_criteria": {"type": "array", "items": {"type": "string"}},
+    "verification_commands": {"type": "array", "items": {"type": "string"}}
+  }
+}

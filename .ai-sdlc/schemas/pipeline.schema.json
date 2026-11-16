@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aisdlc.dev/schemas/pipeline.schema.json",
+  "title": "AI SDLC Pipeline Profiles (ADR-010)",
+  "description": "Named rule sets on top of the framework defaults. Tightening is free; loosening a default needs a waiver in the profile. The constitution (stages, human gates, verification classes, Class N for security, evidence, independent review) has no field here and cannot be changed by a profile.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version"],
+  "properties": {
+    "version": {"const": 1},
+    "schema_version": {"type": "integer", "minimum": 0, "description": "Record schema generation. Absent means 0: a record written before schema versioning existed."},
+    "default": {"type": "string", "pattern": "^[a-z][a-z0-9-]{1,39}$", "description": "Profile for Intent types with no by_type entry. Defaults to standard."},
+    "by_type": {
+      "type": "object",
+      "description": "Intent type → profile. The type's profile is the one it runs unless `new --profile` names one at least as strict.",
+      "additionalProperties": {"type": "string", "pattern": "^[a-z][a-z0-9-]{1,39}$"}
+    },
+    "profiles": {
+      "type": "object",
+      "additionalProperties": {"$ref": "#/$defs/profile"}
+    }
+  },
+  "$defs": {
+    "profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["description"],
+      "properties": {
+        "description": {"type": "string", "minLength": 3},
+        "modes": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["compact", "full"]}},
+        "required_artifacts": {
+          "type": "object",
+          "description": "Stage an Intent advances into → files that must exist first.",
+          "additionalProperties": false,
+          "properties": {
+            "framed": {"$ref": "#/$defs/paths"},
+            "specified": {"$ref": "#/$defs/paths"},
+            "planned": {"$ref": "#/$defs/paths"},
+            "building": {"$ref": "#/$defs/paths"}
+          }
+        },
+        "specification": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "fail_on": {"enum": ["warning", "error", "never"]},
+            "rules": {
+              "type": "object",
+              "description": "Lint rule code → the severity it counts as for this profile.",
+              "additionalProperties": {"enum": ["info", "warning", "error"]}
+            }
+          }
+        },
+        "gates": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "G1": {"$ref": "#/$defs/gate"},
+            "G2": {"$ref": "#/$defs/gate"},
+            "G3": {"$ref": "#/$defs/gate"},
+            "G4": {"$ref": "#/$defs/gate"},
+            "G5": {"$ref": "#/$defs/gate"}
+          }
+        },
+        "verification": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "holdout_waiver": {"enum": ["allowed", "forbidden"]}
+          }
+        },
+        "waivers": {
+          "type": "array",
+          "description": "One entry per default this profile loosens.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["rule", "approved_by", "reason", "approved_at"],
+            "properties": {
+              "rule": {"type": "string", "minLength": 3},
+              "approved_by": {"type": "string", "minLength": 1},
+              "reason": {"type": "string", "minLength": 3},
+              "approved_at": {"type": "string", "minLength": 4}
+            }
+          }
+        }
+      }
+    },
+    "paths": {"type": "array", "minItems": 1, "items": {"type": "string", "pattern": "^(?!/)(?!.*\\.\\.)[\\w./-]+$"}},
+    "gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "approvals": {"type": "integer", "minimum": 1, "maximum": 5, "description": "How many different people must approve."},
+        "approvers": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+      }
+    }
+  }
+}

@@ -1,0 +1,3 @@
+id: case-002-unsupported-claim-dropped
+check: A claim with no supporting retrieved passage is dropped before the answer returns.
+expected: The drop is recorded in the trace, not discarded.

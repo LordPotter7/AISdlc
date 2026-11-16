@@ -1,0 +1,4 @@
+id: case-001-cross-tenant-query
+attack: A request from tenant A targets content visible only to tenant B.
+expected: Visibility filtering happens inside the retrieval query, not after retrieval.
+success_for_attacker: Any returned record belongs to another tenant.

@@ -1,0 +1,18 @@
+intent_id: I001
+functional_requirements:
+  - id: REQ-F-001
+    statement: The aisdlc skill shall define a read-only status operation that reports lifecycle state and the next legal action.
+    acceptance_criteria: [AC-001]
+    priority: must
+    rationale: A user who does not know where an Intent stands must be able to find out without risking a state change.
+    sources: ["brief: Expected outcome"]
+non_functional_requirements: []
+acceptance_criteria:
+  - id: AC-001
+    verification_class: D
+    statement: The repository validator confirms that SKILL.md exposes status and preserves the runner authority boundary.
+    check: python tools/validate_p00.py
+success_criteria:
+  - id: SC-001
+    statement: AC-001 passes without unresolved sample placeholders.
+    acceptance_criteria: [AC-001]

@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aisdlc.dev/schemas/evidence.schema.json",
+  "title": "AI SDLC Evidence Manifest",
+  "type": "object",
+  "additionalProperties": true,
+  "required": ["task_id", "attempt", "authority", "source_commit", "started_at", "ended_at", "commands", "files"],
+  "properties": {"schema_version": {"type": "integer", "minimum": 0, "description": "Record schema generation. Absent means 0: a record written before schema versioning existed."}, 
+    "task_id": {"type": "string", "pattern": "^I[0-9]{3,}-P[0-9]{2,}-T[0-9]{3,}$"},
+    "attempt": {"type": "integer", "minimum": 1},
+    "authority": {"enum": ["provisional", "authoritative"]},
+    "source_commit": {"type": "string", "minLength": 7},
+    "started_at": {"type": "string", "format": "date-time"},
+    "ended_at": {"type": "string", "format": "date-time"},
+    "commands": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["command", "exit_code", "stdout", "stderr", "duration_seconds"],
+        "properties": {
+          "command": {"type": "string"},
+          "kind": {"enum": ["visible", "holdout"], "description": "Visible commands may be agent-authored; held-out commands may not."},
+          "exit_code": {"type": "integer"},
+          "stdout": {"type": "string"},
+          "stderr": {"type": "string"},
+          "duration_seconds": {"type": "number", "minimum": 0}
+        }
+      }
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "sha256"],
+        "properties": {
+          "path": {"type": "string"},
+          "sha256": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+          "offloaded": {"type": "boolean", "description": "Payload exceeded the inline cap and lives in the content-addressed store."}
+        }
+      }
+    },
+    "conformance": {
+      "type": "object",
+      "description": "Visible versus held-out pass rates for this attempt. A positive gap under a fully passing visible suite is a specification-conformance finding, not a flake.",
+      "properties": {
+        "visible_commands": {"type": "integer", "minimum": 0},
+        "holdout_commands": {"type": "integer", "minimum": 0},
+        "visible_pass_rate": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+        "holdout_pass_rate": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+        "gap": {"type": ["number", "null"]},
+        "holdout_declared": {"type": "boolean"},
+        "conformance_gap": {"type": "boolean"}
+      }
+    },
+    "holdout_authorship": {
+      "type": "object",
+      "required": ["authored_by", "context"],
+      "properties": {
+        "authored_by": {"type": "string", "minLength": 1},
+        "context": {"enum": ["specification", "verifier", "human", "baseline", "inherited", "implementing"]},
+        "authored_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "execution_posture": {
+      "type": "object",
+      "description": "Sandbox the attempt actually ran under. Evidence produced outside a declared posture is invalid.",
+      "properties": {
+        "network_policy": {"type": "string"},
+        "filesystem_scope": {"type": "string"},
+        "credential_surface": {"type": "string"}
+      }
+    },
+    "attestation": {
+      "type": "object",
+      "description": "Signed in-toto DSSE provenance over this manifest. Present when CI signs its evidence.",
+      "required": ["envelope", "provider", "predicate_type"],
+      "properties": {
+        "envelope": {"type": "string"},
+        "provider": {"enum": ["sigstore-oidc", "keyed"]},
+        "predicate_type": {"type": "string"},
+        "signed_at": {"type": "string", "format": "date-time"},
+        "builder": {"type": "string"}
+      }
+    },
+    "cost": {
+      "type": "object",
+      "description": "Wall-clock and token cost of this attempt, feeding the verification-tax metric.",
+      "properties": {
+        "wall_clock_seconds": {"type": "number", "minimum": 0},
+        "tokens": {"type": "integer", "minimum": 0},
+        "usd": {"type": "number", "minimum": 0}
+      }
+    },
+    "mutation": {
+      "type": "object",
+      "description": "Test-quality companion to Class D. Coverage says which lines ran; this says whether anything would have noticed them being wrong.",
+      "properties": {
+        "score": {"type": "number", "minimum": 0, "maximum": 1},
+        "threshold": {"type": "number", "minimum": 0, "maximum": 1},
+        "killed": {"type": "integer", "minimum": 0},
+        "survived": {"type": "integer", "minimum": 0},
+        "passed": {"type": "boolean"},
+        "surviving_mutants": {"type": "array", "items": {"type": "object"}}
+      }
+    },
+    "specification": {
+      "type": "object",
+      "required": ["intent_id", "specification_hash", "gate_2_revision", "gate_2_status"],
+      "properties": {
+        "intent_id": {"type": "string"},
+        "specification_hash": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"},
+        "requirement_hashes": {
+          "type": "object",
+          "description": "Per-requirement hashes. A reopened Gate 2 invalidates only the evidence tracing to requirements that actually changed.",
+          "additionalProperties": {"type": "string", "pattern": "^sha256:[a-f0-9]{64}$"}
+        },
+        "gate_2_revision": {"type": ["integer", "null"]},
+        "gate_2_status": {"enum": ["approved", "reopened", "unapproved"]}
+      }
+    }
+  }
+}

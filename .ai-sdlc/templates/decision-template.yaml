@@ -1,0 +1,49 @@
+# Architectural decision. Author the substance here, then register it:
+#
+#   ai-sdlc decision record I001 --from this-file.yaml
+#
+# The runner allocates the identifier, stamps the time, and hashes the content. Do not
+# write an `id` yourself — the registry refuses a decision that arrives with one, for the
+# same reason it refuses every other model-chosen identifier.
+#
+# The hash covers context, decision, consequences, alternatives, and affects. It does not
+# cover status, so accepting a proposal never invalidates evidence pinned to it. Editing
+# any of the hashed fields does invalidate the evidence of Tasks that declared this
+# decision in `source_decisions` — and only those Tasks.
+
+intent_id: "{{INTENT_ID}}"
+
+title: "{{SHORT_IMPERATIVE_TITLE}}"
+
+# Why this was a decision rather than an obvious call. The forces, the constraints, and
+# what was true at the time. A reader in six months has this and nothing else.
+context: |
+  {{WHAT_MADE_THIS_A_CHOICE}}
+
+# What was decided, in the active voice. One call, stated plainly.
+decision: |
+  {{WHAT_WE_DECIDED}}
+
+# What this makes easy and what it makes expensive. Name the cost you accepted; a
+# consequences section with no cost in it is a decision nobody actually weighed.
+consequences: |
+  {{WHAT_THIS_BUYS_AND_WHAT_IT_COSTS}}
+
+# Options considered and why each was set aside. Optional, and worth writing: the
+# alternative you rejected is the one somebody will propose again next quarter.
+alternatives:
+  - option: "{{OPTION}}"
+    rejected_because: "{{REASON}}"
+
+# Approved requirements this decision serves. Every entry must exist in requirements.yaml.
+requirements:
+  - "{{REQ_F_XXX}}"
+
+# Components or paths this decision constrains. Advisory — the binding record is which
+# Tasks declare this decision in their `source_decisions`.
+affects:
+  - "{{PATH_OR_COMPONENT}}"
+
+# Set only when replacing an earlier decision. The superseded record is preserved and
+# marked, never deleted, and a Task may not trace to a superseded decision.
+# supersedes: "{{IXXX_DXXX}}"

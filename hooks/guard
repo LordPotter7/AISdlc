@@ -1,0 +1,22 @@
+#!/bin/sh
+# Lifecycle guard entry point. Invoked as: run-hook.cmd guard <event>
+#
+# EXTENSIONLESS ON PURPOSE. Claude Code's Windows auto-detection prepends `bash` to a
+# command string ending in `.sh`, which would re-enter the launcher instead of running
+# this. The same reason `superpowers` names its targets `session-start`, not
+# `session-start.sh`.
+#
+# Fails OPEN when no interpreter is present, and says so on stderr. A guard that fails
+# closed would make every edit impossible on a machine with no Python, which is a worse
+# outcome than an unenforced lifecycle — but silence would be worse still, because an
+# inactive guard and a satisfied guard look identical.
+DIR="$(cd -- "$(dirname -- "$0")" && pwd)"
+
+for candidate in python3 python py; do
+  if command -v "$candidate" >/dev/null 2>&1 && "$candidate" -c 'import sys; sys.exit(0 if sys.version_info >= (3, 12) else 1)' >/dev/null 2>&1; then
+    exec "$candidate" "$DIR/guard.py" "$@"
+  fi
+done
+
+echo "[ai-sdlc] no python3 >= 3.12 found; lifecycle guards are inactive this session." >&2
+exit 0

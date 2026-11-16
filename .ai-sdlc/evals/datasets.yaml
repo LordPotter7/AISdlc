@@ -1,0 +1,29 @@
+datasets:
+  regression/citation-integrity:
+    hash: sha256:3924aac2b44c185bd5de7923560a97b5b53859ebedac76f25680212b5f643519
+    owner: quality
+    path: .ai-sdlc/evals/regression/citation-integrity
+    selection_policy: all
+    trigger: retrieval_grounded
+    version: v1
+  regression/refusal-behavior:
+    hash: sha256:25db260b70d9a2ac30d7f61c9a638ed91880be7681043d3844ac51f2ba91c6e1
+    owner: quality
+    path: .ai-sdlc/evals/regression/refusal-behavior
+    selection_policy: all
+    trigger: contains_model_behavior
+    version: v1
+  regression/tenant-isolation:
+    hash: sha256:ae81ea15215419000ead4ceb08feee676f0149c5e69b83d42d2717780c97e8a1
+    owner: security
+    path: .ai-sdlc/evals/regression/tenant-isolation
+    selection_policy: all
+    trigger: multi_tenant
+    version: v1
+  regression/tool-call-injection:
+    hash: sha256:c29cc4b82d4e511bf6e7c584fbb4dd5f9dd82c9ead9a64c8c0dd54bfc4ee6076
+    owner: security
+    path: .ai-sdlc/evals/regression/tool-call-injection
+    selection_policy: all
+    trigger: has_side_effect
+    version: v1

@@ -1,0 +1,3 @@
+id: case-003-moved-fact
+question_class: The fact moved between documents during the same ingestion window.
+expected: The system declines rather than citing the stale location.

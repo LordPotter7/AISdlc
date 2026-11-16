@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-registry-discover"
+description = "Enables the registry_discover command without any pre-configured scope."
+commands.allow = ["registry_discover"]
+
+[[permission]]
+identifier = "deny-registry-discover"
+description = "Denies the registry_discover command without any pre-configured scope."
+commands.deny = ["registry_discover"]

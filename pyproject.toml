@@ -1,0 +1,38 @@
+[project]
+name = "ai-sdlc"
+version = "0.2.0"
+description = "Adaptive evidence-driven AI SDLC skill and deterministic lifecycle runner"
+requires-python = ">=3.12"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+# Zero runtime dependencies. The plugin is installed with `/plugin install`, never with
+# `pip`, so everything it needs is either the standard library or vendored under
+# scripts/aisdlc/vendor/.
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "pytest>=8.4,<10",
+    "ruff>=0.12,<1",
+    # Development only, and deliberately kept: tests/plugin/test_jsonschema_mini.py
+    # differential-tests our own validator against the real one. Nothing at runtime
+    # imports it.
+    "jsonschema>=4.25,<5",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+# Vendored third-party code is kept byte-identical to upstream; never lint or reformat it.
+extend-exclude = ["scripts/aisdlc/vendor"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.ruff.lint.isort]
+# The runtime package lives at scripts/aisdlc/, which isort cannot infer from the layout.
+known-first-party = ["aisdlc"]
+
+[tool.pytest.ini_options]
+pythonpath = ["scripts"]
+testpaths = ["tests"]

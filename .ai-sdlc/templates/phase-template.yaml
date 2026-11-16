@@ -1,0 +1,11 @@
+id: "{{PHASE_ID}}"
+intent_id: "{{INTENT_ID}}"
+title: "{{PHASE_TITLE}}"
+status: pending
+objective: "{{PHASE_OBJECTIVE}}"
+requirements: ["{{REQUIREMENT_ID}}"]
+depends_on: []
+entry_criteria: ["{{ENTRY_CRITERION}}"]
+tasks: ["{{TASK_ID}}"]
+exit_criteria: ["{{PHASE_EXIT_CRITERION}}"]
+verification_commands: ["{{VERIFICATION_COMMAND}}"]

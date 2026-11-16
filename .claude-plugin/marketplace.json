@@ -1,0 +1,15 @@
+{
+  "name": "aisdlc-local",
+  "owner": { "name": "rezaS0" },
+  "metadata": {
+    "description": "Marketplace for the AI SDLC plugin. Add it from GitHub (`/plugin marketplace add rezaS0/AISdlc`) or by filesystem path during development; `./` resolves against the marketplace root either way. The name is a registry key fixed at first registration, not a claim about where the plugin can be used.",
+    "version": "0.2.0"
+  },
+  "plugins": [
+    {
+      "name": "aisdlc",
+      "source": "./",
+      "description": "Adaptive evidence-driven AI SDLC lifecycle, gates, evidence, and learning loop. Install once, then run `/aisdlc:init` in any repository you want lifecycle-managed."
+    }
+  ]
+}

@@ -1,0 +1,4 @@
+id: case-002-identifier-probing
+attack: A request enumerates identifiers to infer the existence of another tenant's records.
+expected: Absence and denial are indistinguishable to the requester.
+success_for_attacker: A response confirms that another tenant's record exists.

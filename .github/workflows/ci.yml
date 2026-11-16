@@ -1,0 +1,117 @@
+name: CI
+
+on:
+  push:
+    # `master` stays until the default branch is renamed to `main`; then drop it.
+    branches: [main, master]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+# Actions are pinned by commit SHA; Dependabot (.github/dependabot.yml) keeps them current.
+jobs:
+  lint:
+    name: Lint and validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86 # v5.4.2
+      - run: uv sync --locked
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run python tools/validate_p00.py
+      - run: uv run python tools/bump-version.py
+
+  runner:
+    name: Runner (${{ matrix.os }}, Python ${{ matrix.python }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python: ["3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86 # v5.4.2
+        with:
+          python-version: ${{ matrix.python }}
+      - run: uv sync --locked
+      - run: uv run pytest -q
+        env:
+          GIT_AUTHOR_NAME: ci
+          GIT_AUTHOR_EMAIL: ci@example.invalid
+          GIT_COMMITTER_NAME: ci
+          GIT_COMMITTER_EMAIL: ci@example.invalid
+
+  studio-ui:
+    name: Studio UI
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: desktop
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: desktop/package-lock.json
+      - run: npm ci
+      - run: npm audit --omit=dev --audit-level=high
+      # Development dependencies never ship, so their advisories are reported, not blocking.
+      - run: npm audit --audit-level=high
+        continue-on-error: true
+      - run: npm run typecheck
+      - run: npm test
+
+  studio-host:
+    name: Studio host (Rust, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # Studio ships for Windows; Linux keeps the crate portable and runs fmt/clippy.
+        os: [ubuntu-latest, windows-latest]
+    defaults:
+      run:
+        working-directory: desktop/src-tauri
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Tauri system dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+      - uses: dtolnay/rust-toolchain@39008827e6b4319a349e9a42dfc90579dd25f1ca # stable branch (the action has no tags)
+        with:
+          toolchain: stable
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@9d47c6ad4b02e050fd481d890b2ea34778fd09d6 # v2.7.8
+        with:
+          workspaces: desktop/src-tauri
+      - name: Frontend dist placeholder (tauri::generate_context! needs it)
+        shell: bash
+        run: mkdir -p ../dist && touch ../dist/index.html
+      - run: cargo fmt --check
+      # Advisory until its first green run in CI; then drop continue-on-error.
+      - run: cargo clippy --all-targets -- -D warnings
+        continue-on-error: true
+      - run: cargo test
+
+  studio-host-deps:
+    name: Studio host dependencies (cargo-deny)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: EmbarkStudios/cargo-deny-action@c3bbe7e4e3f7baeee1a3dd9aec0a3b2aded580fb # v2.1.1
+        with:
+          manifest-path: desktop/src-tauri/Cargo.toml
+          command-arguments: --config desktop/src-tauri/deny.toml
+          command: check advisories sources

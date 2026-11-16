@@ -1,0 +1,26 @@
+# Documentation, not configuration (ADR-010). The runner's constants in scripts/aisdlc/state.py
+# are the source; tests/test_w8_pipeline.py proves this file agrees with them. Editing it changes
+# nothing. Per-kind rules belong in .ai-sdlc/pipeline.yaml.
+intent:
+  initialized: [framed, aborted]
+  framed: [specified, aborted]
+  specified: [planned, framed, aborted]
+  planned: [building, specified, aborted]
+  building: [converging, planned, aborted]
+  converging: [awaiting_acceptance, building, aborted]
+  awaiting_acceptance: [completed, converging, aborted]
+  completed: []
+  aborted: []
+task:
+  pending: [ready, superseded]
+  ready: [in_progress, superseded]
+  in_progress: [verifying, blocked]
+  verifying: [review, retry]
+  review: [verified, retry]
+  retry: [in_progress, blocked]
+  blocked: [in_progress, failed]
+  verified: [merged]
+  merged: [reverted]
+  reverted: []
+  superseded: []
+  failed: []

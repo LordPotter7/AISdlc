@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aisdlc.dev/schemas/pre-gate-review.schema.json",
+  "title": "AI SDLC Pre-Gate Adversarial Review",
+  "description": "A fresh-context adversarial review of a specification or a plan, recorded before the human gate that would approve it.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "intent_id",
+    "gate",
+    "reviewer_agent_id",
+    "decision",
+    "findings",
+    "recorded_at"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Record schema generation. Absent means 0: a record written before schema versioning existed."
+    },
+    "intent_id": {
+      "type": "string",
+      "pattern": "^I[0-9]{3,}$"
+    },
+    "gate": {
+      "enum": [
+        "G2",
+        "G3"
+      ]
+    },
+    "reviewer_agent_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "reviewer_model": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Model that produced the review. Independence is enforced on the model family, not the agent label."
+    },
+    "author_model": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Model that authored the artifact under review, when it is known."
+    },
+    "decision": {
+      "enum": [
+        "approved",
+        "changes_required",
+        "blocked"
+      ]
+    },
+    "checks": {
+      "type": "object",
+      "additionalProperties": {
+        "enum": [
+          "passed",
+          "failed",
+          "not_applicable"
+        ]
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "artifact_hash": {
+      "type": "string",
+      "description": "Hash of the artifact reviewed, so a later edit is visible as a review that no longer covers what it claims to."
+    },
+    "recorded_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

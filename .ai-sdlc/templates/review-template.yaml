@@ -1,0 +1,15 @@
+# Independent Task review, passed to:
+#   ai-sdlc review-task <Ixxx-Pnn-Tnnn> --review <this file> --evidence <manifest.json> --implementer <agent id>
+# Written by the aisdlc-verifier agent from a fresh context. The reviewer's model family must
+# differ from the implementer's. The runner adds task_id, implementer_agent_id,
+# evidence_manifest and recorded_at; do not write them here.
+# Schema: schemas/review.schema.json
+reviewer_agent_id: aisdlc-verifier
+reviewer_model: "{{REVIEWER_MODEL}}"        # e.g. claude-opus-5-5
+implementer_model: "{{IMPLEMENTER_MODEL}}"  # e.g. claude-fable-5-1 (a different family)
+decision: approved                          # approved | changes_required | blocked
+checks:                                     # each: passed | failed | not_applicable
+  criteria_met: passed
+  scope_respected: passed
+  holdout_passed: passed
+findings: []                                # one mapping per problem: {id, severity, summary}

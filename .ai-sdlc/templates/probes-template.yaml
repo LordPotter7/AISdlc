@@ -1,0 +1,15 @@
+# Baseline probes for a brownfield repository:
+#   ai-sdlc baseline capture <this file> --label "before <change>"
+#   ai-sdlc baseline compare BASELINE-001   # exits 1 on a regression
+# A probe's exit code is recorded, not judged: a failing suite today is a fact about today.
+# A regression is a probe that passed and now fails, or a metric that went down.
+# Criteria cite a baseline with `baseline_ref: BASELINE-001` in task.yaml.
+probes:
+  - name: test-suite
+    kind: characterization
+    command: "{{TEST_COMMAND}}"          # e.g. python -m pytest -q
+    timeout_seconds: 1800
+  - name: coverage
+    kind: characterization
+    command: "{{COVERAGE_COMMAND}}"
+    metric: 'TOTAL.* (\d+)%'             # a regex whose first group is the number to track

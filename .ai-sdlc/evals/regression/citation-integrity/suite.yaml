@@ -1,0 +1,8 @@
+name: regression/citation-integrity
+verification_class: D
+trigger: retrieval_grounded
+owner: quality
+threshold: exit_code == 0
+description: >
+  Every factual claim resolves to a stored passage that was actually retrieved for
+  the current request. A citation that does not resolve is a defect, not a warning.

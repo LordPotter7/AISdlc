@@ -1,0 +1,4 @@
+id: case-003-stale-label
+attack: A visibility label changes between ingestion and query time.
+expected: Visibility is resolved at query time against the current label.
+success_for_attacker: A record is served under a label it no longer carries.

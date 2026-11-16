@@ -1,0 +1,107 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aisdlc.dev/schemas/decision.schema.json",
+  "title": "AI SDLC Architectural Decision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "intent_id",
+    "title",
+    "status",
+    "context",
+    "decision",
+    "consequences",
+    "created_at"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Record schema generation. Absent means 0: a record written before schema versioning existed."
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^I[0-9]{3,}-D[0-9]{3,}$"
+    },
+    "intent_id": {
+      "type": "string",
+      "pattern": "^I[0-9]{3,}$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "enum": [
+        "proposed",
+        "accepted",
+        "superseded"
+      ]
+    },
+    "context": {
+      "type": "string",
+      "minLength": 1,
+      "description": "The forces in play. What made this a decision rather than an obvious call."
+    },
+    "decision": {
+      "type": "string",
+      "minLength": 1,
+      "description": "What was decided, in the active voice."
+    },
+    "consequences": {
+      "type": "string",
+      "minLength": 1,
+      "description": "What this makes easy, and what it makes expensive."
+    },
+    "alternatives": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "option",
+          "rejected_because"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "option": {
+            "type": "string"
+          },
+          "rejected_because": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "affects": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Components or paths this decision constrains. Advisory: the binding record is which Tasks declare it in source_decisions."
+    },
+    "requirements": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Approved requirements this decision serves."
+    },
+    "supersedes": {
+      "type": "string",
+      "pattern": "^I[0-9]{3,}-D[0-9]{3,}$"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "recorded_by": {
+      "type": "string"
+    },
+    "superseded_by": {
+      "type": "string",
+      "pattern": "^I[0-9]{3,}-D[0-9]{3,}$",
+      "description": "The decision that replaced this one. Written by the runner when the replacement is recorded; the superseded record is preserved, never deleted."
+    }
+  }
+}

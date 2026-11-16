@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aisdlc.dev/schemas/task.schema.json",
+  "title": "AI SDLC Task",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "intent_id", "phase_id", "title", "status", "objective", "requirements", "source_findings", "depends_on", "affected_paths", "shared_resources", "inputs", "expected_outputs", "acceptance_criteria", "verification_commands", "parallelizable", "retry_limit"],
+  "properties": {"schema_version": {"type": "integer", "minimum": 0, "description": "Record schema generation. Absent means 0: a record written before schema versioning existed."}, 
+    "id": {"type": "string", "pattern": "^I[0-9]{3,}-P[0-9]{2,}-T[0-9]{3,}$"},
+    "intent_id": {"type": "string", "pattern": "^I[0-9]{3,}$"},
+    "phase_id": {"type": "string", "pattern": "^I[0-9]{3,}-P[0-9]{2,}$"},
+    "title": {"type": "string", "minLength": 1}, "status": {"enum": ["pending", "ready", "in_progress", "verifying", "review", "verified", "retry", "blocked", "failed", "superseded", "merged", "reverted"]},
+    "objective": {"type": "string", "minLength": 1},
+    "requirements": {"type": "array", "items": {"type": "string", "pattern": "^REQ-(F|NFR)-[0-9]{3,}$"}},
+    "source_decisions": {"type": "array", "items": {"type": "string", "pattern": "^I[0-9]{3,}-D[0-9]{3,}$"}, "description": "Architectural decisions this Task implements. The third of the three trace targets the repository rules require; see decision.schema.json."}, "source_findings": {"type": "array", "items": {"type": "string", "pattern": "^F-[0-9]{3,}$"}},
+    "depends_on": {"type": "array", "items": {"type": "string", "pattern": "^I[0-9]{3,}-P[0-9]{2,}-T[0-9]{3,}$"}},
+    "affected_paths": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+    "shared_resources": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[a-z][a-z0-9_-]*:.+$"}},
+    "inputs": {"type": "array", "items": {"type": "string"}}, "expected_outputs": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+    "acceptance_criteria": {"type": "array", "minItems": 1, "items": {"type": "object", "additionalProperties": true, "required": ["id", "verification_class"], "properties": {"id": {"type": "string", "pattern": "^AC-[0-9]{3,}$"}, "verification_class": {"enum": ["D", "S", "J", "N"]}, "mutation_threshold": {"type": "number", "minimum": 0, "maximum": 1, "description": "Optional Class D companion. Surviving mutants become structured retry input."}, "baseline_ref": {"type": "string", "pattern": "^BASELINE-[0-9]{3,}$", "description": "Brownfield criteria are stated relative to a characterization baseline."}}}},
+    "verification_commands": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}, "description": "Visible instruments. May be authored by the implementing agent."},
+    "holdout_commands": {
+      "type": "array",
+      "items": {"type": "string", "minLength": 1},
+      "description": "Held-out instruments, authored outside the implementing context. Proving a command ran is not proving it could have failed."
+    },
+    "holdout_authorship": {
+      "type": "object",
+      "required": ["authored_by", "context"],
+      "properties": {
+        "authored_by": {"type": "string", "minLength": 1},
+        "context": {"enum": ["specification", "verifier", "human", "baseline", "inherited", "implementing"]},
+        "authored_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "holdout_waiver": {
+      "type": "object",
+      "required": ["reason", "approved_by"],
+      "description": "Recorded exception when a Task genuinely admits no held-out instrument. A waiver is a decision with a name on it, not a silent omission.",
+      "properties": {
+        "reason": {"type": "string", "minLength": 1},
+        "approved_by": {"type": "string", "minLength": 1},
+        "approved_at": {"type": "string", "format": "date-time"}
+      }
+    },
+    "migration": {
+      "type": "object",
+      "description": "Declared when a Task changes persistent state. Forward, rollback and invariant evidence are all ordinary Class D commands.",
+      "properties": {
+        "forward_command": {"type": "string", "minLength": 1},
+        "rollback_command": {"type": "string", "minLength": 1},
+        "invariant_commands": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "irreversible": {"type": "boolean"},
+        "irreversibility_accepted_by": {"type": "string", "minLength": 1},
+        "drops_fields": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "reads_fields": {"type": "array", "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "execution_posture": {
+      "type": "object",
+      "properties": {
+        "network_policy": {"type": "string"},
+        "filesystem_scope": {"type": "string"},
+        "credential_surface": {"type": "string"}
+      }
+    },
+    "repository": {"type": "string", "minLength": 1, "description": "Participating repository identifier for a federated Intent."},
+    "parallelizable": {"type": "boolean"}, "retry_limit": {"type": "integer", "minimum": 0}
+  },
+  "anyOf": [{"properties": {"requirements": {"minItems": 1}}}, {"properties": {"source_findings": {"minItems": 1}}}]
+}

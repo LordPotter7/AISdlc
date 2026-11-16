@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aisdlc.dev/schemas/threat-model.schema.json",
+  "title": "AI SDLC Threat Model",
+  "description": "STRIDE per trust boundary (Wave S2.2). Lives in 02-specification/, so it is frozen at Gate 2 and covered by the pre-gate review hash.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["intent_id", "boundaries", "threats"],
+  "properties": {
+    "schema_version": {"type": "integer", "minimum": 0},
+    "intent_id": {"type": "string", "pattern": "^I[0-9]{3,}$"},
+    "boundaries": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/boundary"}},
+    "threats": {"type": "array", "items": {"$ref": "#/$defs/threat"}}
+  },
+  "$defs": {
+    "stride": {"enum": ["spoofing", "tampering", "repudiation", "information_disclosure", "denial_of_service", "elevation_of_privilege"]},
+    "boundary": {
+      "type": "object", "additionalProperties": false, "required": ["id", "name"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^TB-[0-9]{3,}$"},
+        "name": {"type": "string", "minLength": 1},
+        "description": {"type": "string"},
+        "not_applicable": {
+          "type": "array",
+          "description": "STRIDE categories considered at this boundary and judged not to apply, each with a reason. Silence is not a judgement.",
+          "items": {
+            "type": "object", "additionalProperties": false, "required": ["category", "reason"],
+            "properties": {"category": {"$ref": "#/$defs/stride"}, "reason": {"type": "string", "minLength": 1}}
+          }
+        }
+      }
+    },
+    "threat": {
+      "type": "object", "additionalProperties": false, "required": ["id", "boundary", "stride", "description", "disposition"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^TM-[0-9]{3,}$"},
+        "boundary": {"type": "string", "pattern": "^TB-[0-9]{3,}$"},
+        "stride": {"$ref": "#/$defs/stride"},
+        "description": {"type": "string", "minLength": 1},
+        "disposition": {"enum": ["mitigate", "accept", "transfer"]},
+        "mitigated_by": {"type": "array", "items": {"type": "string", "pattern": "^REQ-(F|NFR)-[0-9]{3,}$"}},
+        "verified_by": {"type": "array", "items": {"type": "string", "pattern": "^AC-[0-9]{3,}$"}},
+        "standing_checks": {
+          "type": "array",
+          "description": "Inherited W4.3 security checks that add assurance. Supplementary: they never replace a Class N criterion.",
+          "items": {"type": "string", "minLength": 1}
+        },
+        "inherited_from": {"type": "string", "pattern": "^LESSON-[0-9]{3,}$", "description": "S3.4: the promoted threat lesson this entry answers."},
+        "accepted_by": {"type": "string", "minLength": 1},
+        "reason": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

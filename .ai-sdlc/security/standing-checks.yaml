@@ -1,0 +1,17 @@
+version: 1
+description: Security checks inherited by every matching Intent. Declining one requires
+  an escalation, exactly like declining any other standing suite.
+checks:
+- name: security/secret-scan
+  trigger: null
+  command: git diff --cached --name-only -z | xargs -0 -r grep -nIE '(AKIA[0-9A-Z]{16}|-----BEGIN
+    [A-Z ]*PRIVATE KEY-----|xox[baprs]-)' && exit 1 || exit 0
+  description: Fail when a change introduces a credential-shaped literal.
+- name: security/dependency-audit
+  trigger: null
+  command: uv run pip-audit --strict || pip-audit --strict
+  description: Fail on a known-vulnerable dependency.
+- name: security/static-analysis
+  trigger: has_side_effect
+  command: uv run bandit -q -r . -x ./tests,./.venv
+  description: Static analysis over affected paths for side-effecting changes.

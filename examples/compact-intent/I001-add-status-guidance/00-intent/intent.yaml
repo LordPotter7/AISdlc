@@ -1,0 +1,9 @@
+id: I001
+title: Add status operation guidance
+intent_type: feature
+status: initialized
+autonomy_mode: autonomous
+contains_model_behavior: false
+artifact_mode: compact
+trigger_flags: {}
+created_at: 2026-08-23T09:00:00Z

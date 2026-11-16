@@ -1,0 +1,45 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+
+# ai-sdlc:begin
+# Runner-owned runtime state. Belongs to the repository that created it and must
+# never be committed: convergence pins evidence to a commit, so committing state
+# after evidence capture makes the clean-tree check unsatisfiable.
+.ai-sdlc/runtime/
+.ai-sdlc/metrics/
+# ai-sdlc:end
+
+# Local state of other developer tools
+.ai-governance/
+dist/
+
+# Build output / dependencies
+desktop/src-tauri/target/
+target/
+node_modules/
+desktop/dist/
+build/
+*.egg-info/
+.coverage
+htmlcov/
+.mypy_cache/
+
+# Secrets and local env
+.env
+.env.*
+*.pem
+*.key
+*.pfx
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Claude Code local session state
+.claude/scheduled_tasks.lock
+.claude/settings.local.json

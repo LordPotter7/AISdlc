@@ -1,0 +1,11 @@
+retry_limit: 2
+conditions:
+  - material_scope_expansion
+  - specification_plan_conflict
+  - mandatory_policy_unsatisfied
+  - destructive_or_irreversible_action
+  - incompatible_architectural_changes
+  - retry_limit_exhausted
+  - threshold_change_required
+  - class_n_attacker_success
+  - required_access_credentials_or_data_unavailable

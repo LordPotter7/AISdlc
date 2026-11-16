@@ -1,0 +1,18 @@
+# Findings for one Intent: delivery/intents/<Ixxx>-<slug>/05-verification/findings.yaml
+# Validated against schemas/finding.schema.json by `ai-sdlc validate-intent` and at convergence.
+# Stages are numbered 0 Register, 1 Frame, 2 Specify, 3 Plan, 4 Build, 5 Converge, 6 Close.
+# A critical or high finding cannot be closed until a blocking lesson covers it (`lesson_ref`).
+findings:
+  - id: F-001                          # F-001, F-002, ... never reuse one
+    severity: high                     # critical | high | medium | low
+    status: open                       # open | resolved | accepted | escalated
+    source: "{{WHO_OR_WHAT_FOUND_IT}}" # e.g. "G2 pre-gate review PR-1", "I003-P00-T001 verifier"
+    requirement: "{{REQUIREMENT_ID}}"  # optional: the requirement it concerns
+    acceptance_criteria: []            # optional: criteria that should have caught it
+    description: "{{WHAT_IS_WRONG}}"
+    evidence: ["{{PATH_OR_REFERENCE}}"]
+    impact: "{{WHAT_HAPPENS_IF_IT_SHIPS}}"
+    recommended_action: "{{WHAT_TO_DO}}"
+    introduced_stage: 2                # the stage the defect entered
+    detected_stage: 2                  # the stage it was caught; the loop metrics measure the gap
+    lesson_ref: ""                     # LESSON-xxx once a lesson covers it (required for critical/high)

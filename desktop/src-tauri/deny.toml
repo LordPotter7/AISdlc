@@ -1,0 +1,17 @@
+# cargo-deny policy for the Studio host. CI runs `check advisories sources`.
+
+[graph]
+targets = ["x86_64-pc-windows-msvc", "x86_64-unknown-linux-gnu"]
+
+[advisories]
+# Every RustSec advisory fails the build, including unmaintained and yanked crates.
+# Add an `ignore` entry only with the advisory id and a one-line reason.
+yanked = "deny"
+ignore = []
+
+[sources]
+# Only crates.io. A git or alternative-registry dependency must be added here on purpose.
+unknown-registry = "deny"
+unknown-git = "deny"
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]
+allow-git = []

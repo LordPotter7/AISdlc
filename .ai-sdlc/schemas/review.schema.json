@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aisdlc.dev/schemas/review.schema.json",
+  "title": "AI SDLC Independent Review",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["task_id", "reviewer_agent_id", "implementer_agent_id", "decision", "checks", "findings", "evidence_manifest", "recorded_at"],
+  "properties": {"schema_version": {"type": "integer", "minimum": 0, "description": "Record schema generation. Absent means 0: a record written before schema versioning existed."}, 
+    "task_id": {"type": "string", "pattern": "^I[0-9]{3,}-P[0-9]{2,}-T[0-9]{3,}$"},
+    "reviewer_agent_id": {"type": "string", "minLength": 1},
+    "implementer_agent_id": {"type": "string", "minLength": 1},
+    "reviewer_model": {"type": "string", "minLength": 1, "description": "Model that produced the review. Independence is enforced on the model family, not the agent label."},
+    "implementer_model": {"type": "string", "minLength": 1, "description": "Model that produced the implementation under review."},
+    "decision": {"enum": ["approved", "changes_required", "blocked"]},
+    "checks": {"type": "object", "additionalProperties": {"enum": ["passed", "failed", "not_applicable"]}},
+    "findings": {"type": "array", "items": {"type": "object"}},
+    "evidence_manifest": {"type": "string"},
+    "recorded_at": {"type": "string", "format": "date-time"}
+  }
+}

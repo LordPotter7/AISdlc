@@ -1,0 +1,25 @@
+id: I001-P00-T001
+intent_id: I001
+phase_id: I001-P00
+title: Define the read-only status operation
+status: pending
+objective: Define the status operation and verify that it preserves the runner authority boundary.
+requirements: [REQ-F-001]
+source_findings: []
+depends_on: []
+affected_paths:
+  - .claude/skills/aisdlc/SKILL.md
+  - tests/test_validate_p00.py
+shared_resources: []
+inputs:
+  - Adaptive Evidence-Driven AI SDLC v0.5 lifecycle
+expected_outputs:
+  - Documented status operation
+  - Repository validation coverage
+acceptance_criteria:
+  - id: AC-001
+    verification_class: D
+verification_commands:
+  - python tools/validate_p00.py
+parallelizable: false
+retry_limit: 2

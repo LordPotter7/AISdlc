@@ -1,0 +1,38 @@
+{
+  "description": "Every file that carries this plugin's version. `tools/bump-version.py` writes them together; tests/plugin/test_plugin_surface.py::test_declared_versions_agree fails if they drift. Covers the plugin and AISDLC Studio, which release together.",
+  "files": [
+    {
+      "path": ".claude-plugin/plugin.json",
+      "field": "version"
+    },
+    {
+      "path": ".claude-plugin/marketplace.json",
+      "field": "metadata.version"
+    },
+    {
+      "path": "pyproject.toml",
+      "field": "project.version"
+    },
+    {
+      "path": "desktop/package.json",
+      "field": "version"
+    },
+    {
+      "path": "desktop/src-tauri/Cargo.toml",
+      "field": "package.version"
+    },
+    {
+      "path": "desktop/src-tauri/tauri.conf.json",
+      "field": "version"
+    }
+  ],
+  "audit": {
+    "exclude": [
+      "docs/",
+      ".git/",
+      "tests/",
+      "CHANGELOG.md",
+      ".version-bump.json"
+    ]
+  }
+}

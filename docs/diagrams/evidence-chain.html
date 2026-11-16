@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How a claim becomes evidence</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --color-paper:   #f5f5f5;
+      --color-ink:     #2d3142;
+      --color-muted:   #4f5d75;
+      --color-accent:  #eb6c36;
+      --font-sans:     'Geist', system-ui, sans-serif;
+      --font-serif:    'Instrument Serif', serif;
+      --font-mono:     'Geist Mono', ui-monospace, monospace;
+    }
+    body {
+      font-family: var(--font-sans);
+      background: var(--color-paper);
+      color: var(--color-ink);
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 3rem 2rem;
+    }
+    .frame { max-width: 1200px; width: 100%; }
+    .eyebrow {
+      font-family: var(--font-mono); font-size: 0.66rem; font-weight: 500;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--color-muted); margin-bottom: 0.5rem;
+    }
+    h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.5rem, 2.4vw + 0.75rem, 2rem);
+      font-weight: 400; letter-spacing: -0.02em; line-height: 1.15;
+      color: var(--color-ink); margin-bottom: 1.5rem;
+    }
+    svg { width: 100%; min-width: 900px; display: block; }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <p class="eyebrow">Architecture · AI SDLC</p>
+    <h1>How a claim becomes evidence</h1>
+
+    <svg viewBox="0 0 1120 640" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="evidence-chain-title evidence-chain-desc">
+      <title id="evidence-chain-title">How a claim becomes evidence</title>
+      <desc id="evidence-chain-desc">Architecture diagram tracing a Task's declared visible and held-out commands through a verification run by the plugin-resident runner, which emits a hashed commit-pinned manifest, then into an independent review by a different model family before the change may merge.</desc>
+      <defs>
+        <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/></marker>
+        <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#eb6c36"/></marker>
+        <marker id="arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2e5aa8"/></marker>
+      </defs>
+
+      <rect width="100%" height="100%" fill="#f5f5f5"/>
+
+      <!-- Zones (drawn before arrows and nodes) -->
+      <rect x="24" y="104" width="712" height="280" rx="8"
+            fill="rgba(45,49,66,0.02)" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+      <rect x="314" y="108" width="112" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="370" y="117" fill="rgba(45,49,66,0.40)" font-size="7" font-family="'Geist Mono', monospace"
+            text-anchor="middle" letter-spacing="0.14em">YOUR REPOSITORY</text>
+
+      <rect x="816" y="104" width="240" height="280" rx="8"
+            fill="rgba(45,49,66,0.02)" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+      <rect x="880" y="108" width="112" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="936" y="117" fill="rgba(45,49,66,0.40)" font-size="7" font-family="'Geist Mono', monospace"
+            text-anchor="middle" letter-spacing="0.14em">PLUGIN ROOT</text>
+
+      <!-- Arrows (drawn first, behind boxes) -->
+      <path d="M 216,240 H 236 Q 244,240 244,232 V 176 Q 244,168 252,168 H 272"
+            fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <path d="M 216,272 H 236 Q 244,272 244,280 V 336 Q 244,344 252,344 H 272"
+            fill="none" stroke="#eb6c36" stroke-width="1.4" marker-end="url(#arrow-accent)"/>
+      <path d="M 448,168 H 592 Q 600,168 600,176 V 224"
+            fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <path d="M 448,344 H 608 Q 616,344 616,336 V 288"
+            fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <path d="M 696,240 H 796 Q 804,240 804,232 V 176 Q 804,168 812,168 H 840"
+            fill="none" stroke="#2e5aa8" stroke-width="1.2" marker-end="url(#arrow-link)"/>
+      <line x1="936" y1="200" x2="936" y2="288" stroke="#2e5aa8" stroke-width="1.2" marker-end="url(#arrow-link)"/>
+      <path d="M 840,320 H 680 Q 672,320 672,328 V 456"
+            fill="none" stroke="#2e5aa8" stroke-width="1.2" marker-end="url(#arrow-link)"/>
+      <line x1="728" y1="488" x2="792" y2="488" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+      <!-- Arrow labels -->
+      <rect x="172" y="198" width="64" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="204" y="207" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">MAY AUTHOR</text>
+
+      <rect x="172" y="300" width="64" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="204" y="309" fill="#eb6c36" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">MAY NOT</text>
+
+      <rect x="712" y="220" width="76" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="750" y="229" fill="#2e5aa8" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">ONE COMMIT</text>
+
+      <rect x="944" y="238" width="64" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="976" y="247" fill="#2e5aa8" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">MANIFEST</text>
+
+      <rect x="680" y="396" width="80" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="720" y="405" fill="#2e5aa8" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">PINNED</text>
+
+      <rect x="730" y="468" width="60" height="12" rx="2" fill="#f5f5f5"/>
+      <text x="760" y="477" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">VERIFIED</text>
+
+      <!-- Node: Task declaration -->
+      <rect x="40" y="224" width="176" height="64" rx="6" fill="#f5f5f5"/>
+      <rect x="40" y="224" width="176" height="64" rx="6" fill="rgba(79,93,117,0.10)" stroke="#7a8399" stroke-width="1"/>
+      <rect x="48" y="232" width="36" height="12" rx="2" fill="transparent" stroke="rgba(122,131,153,0.40)" stroke-width="0.8"/>
+      <text x="66" y="241" fill="#7a8399" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">TASK</text>
+      <text x="128" y="260" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Task declaration</text>
+      <text x="128" y="276" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">criteria · commands</text>
+
+      <!-- Node: visible suite -->
+      <rect x="272" y="136" width="176" height="64" rx="6" fill="#f5f5f5"/>
+      <rect x="272" y="136" width="176" height="64" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+      <rect x="280" y="144" width="44" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+      <text x="302" y="153" fill="#2d3142" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">VISIBLE</text>
+      <text x="360" y="172" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Visible commands</text>
+      <text x="360" y="188" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">the implementer sees</text>
+
+      <!-- Node: held-out suite (boundary) -->
+      <rect x="272" y="288" width="176" height="64" rx="6" fill="#f5f5f5"/>
+      <rect x="272" y="288" width="176" height="64" rx="6" fill="rgba(235,108,54,0.05)" stroke="rgba(235,108,54,0.50)" stroke-width="1" stroke-dasharray="4,4"/>
+      <rect x="280" y="296" width="44" height="12" rx="2" fill="transparent" stroke="rgba(235,108,54,0.50)" stroke-width="0.8"/>
+      <text x="302" y="305" fill="#eb6c36" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">HELD-OUT</text>
+      <text x="360" y="324" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Held-out commands</text>
+      <text x="360" y="340" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">the instrument it cannot edit</text>
+
+      <!-- Node: verify-task -->
+      <rect x="520" y="224" width="176" height="64" rx="6" fill="#f5f5f5"/>
+      <rect x="520" y="224" width="176" height="64" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+      <rect x="528" y="232" width="36" height="12" rx="2" fill="transparent" stroke="rgba(79,93,117,0.50)" stroke-width="0.8"/>
+      <text x="546" y="241" fill="#4f5d75" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">RUN</text>
+      <text x="608" y="260" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">verify-task</text>
+      <text x="608" y="276" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">reports the gap</text>
+
+      <!-- Node: verify-ci (focal) -->
+      <rect x="840" y="136" width="192" height="64" rx="6" fill="#f5f5f5"/>
+      <rect x="840" y="136" width="192" height="64" rx="6" fill="rgba(235,108,54,0.08)" stroke="#eb6c36" stroke-width="1"/>
+      <rect x="848" y="144" width="28" height="12" rx="2" fill="transparent" stroke="rgba(235,108,54,0.50)" stroke-width="0.8"/>
+      <text x="862" y="153" fill="#eb6c36" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">RUN</text>
+      <text x="936" y="172" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">lifecycle.py</text>
+      <text x="936" y="188" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">not editable from here</text>
+
+      <!-- Node: manifest -->
+      <rect x="840" y="288" width="192" height="64" rx="6" fill="#f5f5f5"/>
+      <rect x="840" y="288" width="192" height="64" rx="6" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+      <rect x="848" y="296" width="40" height="12" rx="2" fill="transparent" stroke="rgba(79,93,117,0.50)" stroke-width="0.8"/>
+      <text x="868" y="305" fill="#4f5d75" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">REC</text>
+      <text x="936" y="324" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Evidence manifest</text>
+      <text x="936" y="340" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">hashes · masks · commit</text>
+
+      <!-- Node: independent review -->
+      <rect x="520" y="456" width="208" height="64" rx="6" fill="#f5f5f5"/>
+      <rect x="520" y="456" width="208" height="64" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+      <rect x="528" y="464" width="44" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+      <text x="550" y="473" fill="#2d3142" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">REVIEW</text>
+      <text x="624" y="492" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Independent review</text>
+      <text x="624" y="508" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">different model family</text>
+
+      <!-- Node: merge -->
+      <rect x="792" y="456" width="208" height="64" rx="6" fill="#f5f5f5"/>
+      <rect x="792" y="456" width="208" height="64" rx="6" fill="rgba(45,49,66,0.03)" stroke="rgba(45,49,66,0.30)" stroke-width="1"/>
+      <rect x="800" y="464" width="40" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.22)" stroke-width="0.8"/>
+      <text x="820" y="473" fill="#7a8399" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">MERGE</text>
+      <text x="896" y="492" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">merge-ready → merge</text>
+      <text x="896" y="508" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">base lag checked</text>
+
+      <!-- Editorial callout -->
+      <text x="560" y="568" fill="#4f5d75" font-size="14" font-style="italic" font-family="'Instrument Serif', serif" text-anchor="middle">A passing command proves the command ran. It does not prove the command could have failed.</text>
+
+      <!-- Legend strip -->
+      <line x1="40" y1="592" x2="1080" y2="592" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+      <text x="40" y="608" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.18em">LEGEND</text>
+
+      <rect x="40" y="624" width="14" height="10" rx="2" fill="rgba(235,108,54,0.05)" stroke="rgba(235,108,54,0.50)" stroke-width="1" stroke-dasharray="3,3"/>
+      <text x="60" y="632" fill="#4f5d75" font-size="8.5" font-family="'Geist', sans-serif">Authorship boundary</text>
+
+      <rect x="216" y="624" width="14" height="10" rx="2" fill="rgba(235,108,54,0.08)" stroke="#eb6c36" stroke-width="1"/>
+      <text x="236" y="632" fill="#4f5d75" font-size="8.5" font-family="'Geist', sans-serif">Outside the repository it judges</text>
+
+      <rect x="432" y="624" width="14" height="10" rx="2" fill="rgba(45,49,66,0.05)" stroke="#4f5d75" stroke-width="1"/>
+      <text x="452" y="632" fill="#4f5d75" font-size="8.5" font-family="'Geist', sans-serif">Runner-owned record</text>
+
+      <line x1="632" y1="630" x2="660" y2="630" stroke="#2e5aa8" stroke-width="1.2" marker-end="url(#arrow-link)"/>
+      <text x="668" y="632" fill="#4f5d75" font-size="8.5" font-family="'Geist', sans-serif">Evidence path</text>
+
+      <line x1="832" y1="630" x2="860" y2="630" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <text x="868" y="632" fill="#4f5d75" font-size="8.5" font-family="'Geist', sans-serif">Declaration / decision</text>
+    </svg>
+  </div>
+</body>
+</html>
