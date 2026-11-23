@@ -46,7 +46,7 @@
     "@vitejs/plugin-react": "^4",
     "jsdom": "^26",
     "tailwindcss": "^4",
-    "typescript": "^5",
+    "typescript": "^7",
     "vite": "^6",
     "vitest": "^3"
   }
